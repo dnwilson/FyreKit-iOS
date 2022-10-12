@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 14, macOS 11.0, *)
+@available(iOS 15, macOS 11.0, *)
 public struct AnimatedMenuBar: View {
   @Binding var selectedIndex: Int
   @Namespace private var menuItemTransition

@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
   name: "FyreKit",
   platforms: [
-    .iOS(.v14)
+    .iOS(.v15)
   ],
   products: [
     // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -17,13 +17,25 @@ let package = Package(
   dependencies: [
     // Dependencies declare other packages that this package depends on.
     // .package(url: /* package url */, from: "1.0.0"),
+     .package(url: "https://github.com/hotwired/turbo-ios", from: "7.0.0-rc.7"),
+     .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
+     .package(url: "https://github.com/izmcm/iPhoneNumberField", from: "0.6.1"),
+     .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "8.0.0"),
+     .package(url: "https://github.com/elai950/AlertToast", from: "1.0.0")
   ],
   targets: [
     // Targets are the basic building blocks of a package. A target can define a module or a test suite.
     // Targets can depend on other targets in this package, and on products in packages this package depends on.
     .target(
         name: "FyreKit",
-        dependencies: []),
+        dependencies: [
+          .product(name: "Turbo", package: "turbo-ios"),
+          .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
+          .product(name: "KeychainAccess", package: "KeychainAccess"),
+          .product(name: "iPhoneNumberField", package: "iPhoneNumberField"),
+          .product(name: "AlertToast", package: "AlertToast")
+        ]
+    ),
     .testTarget(
         name: "FyreKitTests",
         dependencies: ["FyreKit"]),
