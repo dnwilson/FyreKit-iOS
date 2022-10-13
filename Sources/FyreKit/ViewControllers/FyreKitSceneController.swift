@@ -10,7 +10,7 @@ import WebKit
 import SafariServices
 import Turbo
 
-public final class FyreKitSceneController: UIResponder, UIWindowSceneDelegate {
+public class FyreKitSceneController: UIResponder, UIWindowSceneDelegate {
   public var window: UIWindow?
   private let coordinator = AppCoordinator()
 
