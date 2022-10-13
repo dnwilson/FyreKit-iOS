@@ -12,7 +12,7 @@ let package = Package(
     // Products define the executables and libraries a package produces, and make them visible to other packages.
     .library(
         name: "FyreKit",
-        targets: ["FyreKit"]),
+        targets: ["FirebaseMessaging", "FyreKit", "Turbo", "AlertToast"]),
   ],
   dependencies: [
     // Dependencies declare other packages that this package depends on.
@@ -30,7 +30,6 @@ let package = Package(
         name: "FyreKit",
         dependencies: [
           .product(name: "Turbo", package: "turbo-ios"),
-          .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
           .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
           .product(name: "KeychainAccess", package: "KeychainAccess"),
           .product(name: "iPhoneNumberField", package: "iPhoneNumberField"),
