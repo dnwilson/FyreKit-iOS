@@ -10,9 +10,7 @@ let package = Package(
   ],
   products: [
     // Products define the executables and libraries a package produces, and make them visible to other packages.
-    .library(
-        name: "FyreKit",
-        targets: ["FirebaseMessaging", "FyreKit", "Turbo", "AlertToast"]),
+    .library(name: "FyreKit", targets: ["FyreKit"]),
   ],
   dependencies: [
     // Dependencies declare other packages that this package depends on.
@@ -37,8 +35,7 @@ let package = Package(
         ],
         resources: [
           .process("Resources")
-        ]
-    ),
+        ]),
     .testTarget(
         name: "FyreKitTests",
         dependencies: ["FyreKit"]),
