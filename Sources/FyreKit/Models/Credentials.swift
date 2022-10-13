@@ -5,7 +5,7 @@
 //  Created by Dane Wilson on 9/21/21.
 //
 
-struct Credentials: Encodable {
+public struct Credentials: Encodable {
   var password: String = ""
   var phoneNumber: String = ""
 }

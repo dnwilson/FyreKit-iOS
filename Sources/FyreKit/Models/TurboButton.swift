@@ -6,7 +6,7 @@
 //
 
 
-struct TurboButton {
+public struct TurboButton {
   var title: String?
   var icon: String?
   var path: String?
@@ -14,7 +14,7 @@ struct TurboButton {
   var isGet: Bool { path != nil }
   var isScript: Bool { !isGet }
 
-  init(_ message: [String: Any]) {
+  public init(_ message: [String: Any]) {
     self.title = message["title"] as? String
     self.icon = message["icon"] as? String
     self.path = message["path"] as? String

@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct Registration: Codable {
+public struct Registration: Codable {
   var phoneNumber = ""
   var firstName = ""
   var lastName = ""
-  var dreNumber = ""
+//  var dreNumber = ""
   var email = ""
   var password = ""
   var agreeToLegalTerms = false

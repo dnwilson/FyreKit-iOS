@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class Authentication: ObservableObject {
+public class Authentication: ObservableObject {
   @Published var isValidated = false
   
   enum AuthenticationError: Error, LocalizedError, Identifiable {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PhoneNumber: Codable {
+public struct PhoneNumber: Codable {
   var phoneNumber: String = ""
   var id: String?
   var code: String?

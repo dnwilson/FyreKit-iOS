@@ -7,7 +7,7 @@
 
 import WebKit
 
-protocol ScriptMessageDelegate: AnyObject {
+public protocol ScriptMessageDelegate: AnyObject {
   func addActionButton(_ button: TurboButton)
   func addMenuButton(_ menuOptions: [[String: String]])
   func addSegmentedPicker(buttons: [TurboButton])
@@ -15,14 +15,14 @@ protocol ScriptMessageDelegate: AnyObject {
   func dismissModal()
 }
 
-class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
+public class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
   private weak var delegate: ScriptMessageDelegate?
   
   init(delegate: ScriptMessageDelegate) {
     self.delegate = delegate
   }
   
-  func userContentController(
+  public func userContentController(
     _ userContentController: WKUserContentController,
     didReceive message: WKScriptMessage
   ) {
