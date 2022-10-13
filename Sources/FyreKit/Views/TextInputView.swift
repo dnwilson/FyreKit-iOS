@@ -10,7 +10,7 @@ import Turbo
 import iPhoneNumberField
 
 @available(iOS 15.0, *)
-struct TextInputView: View {
+public struct TextInputView: View {
   var title: String
   var type: String
   @Binding var text: String
@@ -31,13 +31,13 @@ struct TextInputView: View {
     !text.isEmpty || (focusedField != nil)
   }
   
-  init(_ title: String, text: Binding<String>, type: String = "text") {
+  public init(_ title: String, text: Binding<String>, type: String = "text") {
     self._text = text
     self.title = title
     self.type = type
   }
   
-  var body: some View {
+  public var body: some View {
     ZStack(alignment: .leading) {
       Text(title)
         .foregroundColor(text.isEmpty ? Color(.placeholderText) : .accentColor)

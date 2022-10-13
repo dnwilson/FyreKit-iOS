@@ -11,6 +11,57 @@ public struct FyreKit {
       static let sendPushToken = "SEND_PUSH_TOKEN"
     }
   }
+  
+  public enum colors {
+    public static let accentColor = getColorFromConfig("ACCENT_COLOR")
+    public static let bgColor = getColorFromConfig("BG_COLOR")
+    public static let borderColor = getColorFromConfig("BORDER_COLOR")
+    public static let disabledPrimaryColor = getColorFromConfig("PRIMARY_COLOR").opacity(0.75)
+    public static let headingColor = getColorFromConfig("PRIMARY_COLOR")
+    public static let primaryColor = getColorFromConfig("PRIMARY_COLOR")
+    public static let textColor = getColorFromConfig("TEXT_COLOR")
+  }
+
+  private static let defaults = [
+    "colors" : [
+      "ACCENT_COLOR" : Color(red: 226 / 255, green: 28 / 255, blue: 33 / 255),
+      "BG_COLOR" : Color(red: 249 / 255, green: 251 / 255, blue: 253 / 255),
+      "BORDER_COLOR" : Color(red: 227 / 255, green: 235 / 255, blue: 246 / 255),
+      "PRIMARY_COLOR" : Color(red: 20 / 255, green: 136 / 255, blue: 229 / 255),
+      "TEXT_COLOR" : Color(red: 72 / 255, green: 79 / 255, blue: 82 / 255)
+    ],
+    "fonts" : [
+      "BASE_FONT": "OpenSans-Regular",
+      "HEADING_FONT": "Poppins-Regular"
+    ]
+  ]
+  
+  public enum fonts {
+    public static let baseFont = getFontFromConfig("BASE_FONT")
+    public static let headingFont = getFontFromConfig("HEADING_FONT")
+  }
+  
+  private static func getColorFromConfig(_ key: String) -> Color {
+    if let colorValues = infoDictionary[key] as? String {
+      let array = colorValues.components(separatedBy: ", ")
+      let red = Double(array[0])! / 255
+      let green = Double(array[1])! / 255
+      let blue = Double(array[2])! / 255
+      
+      return Color(red: red, green: green, blue: blue)
+    } else {
+      return defaults["colors"]?[key] as! Color
+    }
+  }
+  
+  private static func getFontFromConfig(_ key: String) -> String {
+    if let font = infoDictionary[key] as? String {
+      return font
+    } else {
+      return defaults["fonts"]?[key] as! String
+    }
+  }
+
 
   private init() {
   }
@@ -23,12 +74,14 @@ public struct FyreKit {
     preferences.set(!preferences.bool(forKey: "DemoMode"), forKey: "DemoMode")
   }
   
-  public static var appName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
+  public static var appName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
   public static var loggedIn: Bool = preferences.bool(forKey: "LoggedIn")
   public static var isDemoMode: Bool = preferences.bool(forKey: "DemoMode")
   public static var hasPushToken: Bool = preferences.bool(forKey: "PushTokenSaved")
   public static var hasAuthToken: Bool = keychain["access-token"] != nil
   public static var authToken = keychain["access-token"]
+  public static var loginHeaderMessage = infoDictionary["LOGIN_HEADER_MESSAGE"] as? String ?? "FyreKit"
+
   
   // MARK: - Plist
   private static let infoDictionary: [String: Any] = {

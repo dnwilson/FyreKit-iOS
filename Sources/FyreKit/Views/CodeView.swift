@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct CodeView: View {
+public struct CodeView: View {
   var code: String
 
-  var body: some View {
+  public var body: some View {
     VStack(spacing: 10) {
       Text(code)
-        .foregroundColor(textColor)
+        .foregroundColor(FyreKit.colors.textColor)
         .fontWeight(.bold)
-        .font(.custom(headingFont, size: 24))
+        .font(.custom(FyreKit.fonts.headingFont, size: 24))
         .frame(height: 45)
         .padding()
         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(.placeholderText)))

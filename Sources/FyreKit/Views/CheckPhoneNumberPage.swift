@@ -9,7 +9,7 @@ import SwiftUI
 import iPhoneNumberField
 
 
-struct CheckPhoneNumberPage: View {
+public struct CheckPhoneNumberPage: View {
   @ObservedObject var viewModel = PhoneNumberViewModel()
   @StateObject var authentication = Authentication()
   var notificationCenter = NotificationCenter.default
@@ -19,7 +19,7 @@ struct CheckPhoneNumberPage: View {
   @State private var isShowingModal = false
   
   
-  var body: some View {
+  public var body: some View {
     VStack {
       Spacer()
       VStack {
@@ -27,9 +27,9 @@ struct CheckPhoneNumberPage: View {
           .resizable()
           .frame(width: 200, height: 200, alignment: .center)
         Text("Take My Signs")
-          .font(.custom(headingFont, size: 24))
+          .font(.custom(FyreKit.fonts.headingFont, size: 24))
           .fontWeight(.black)
-          .foregroundColor(headingColor)
+          .foregroundColor(FyreKit.colors.headingColor)
       }.frame(maxWidth: .infinity, alignment: .center)
       
       Spacer()
@@ -55,7 +55,7 @@ struct CheckPhoneNumberPage: View {
           .padding(20)
         } else {
           Text("Next")
-            .font(.custom(baseFont, size: 20))
+            .font(.custom(FyreKit.fonts.baseFont, size: 20))
             .padding(20)
             .frame(maxWidth: .infinity)
             .foregroundColor(.white)
@@ -63,7 +63,7 @@ struct CheckPhoneNumberPage: View {
       }
       .disabled(viewModel.disabled)
       .foregroundColor(.white)
-      .background(viewModel.disabled ? disabledPrimaryColor : primaryColor)
+      .background(viewModel.disabled ? FyreKit.colors.disabledPrimaryColor : FyreKit.colors.primaryColor)
       .cornerRadius(8)
     }
     .sheet(isPresented: $isShowingModal) {

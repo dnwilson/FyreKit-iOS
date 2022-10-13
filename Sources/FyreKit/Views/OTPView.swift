@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OTPView: View {
+public struct OTPView: View {
   // 5 minutes
   @State private var timeRemaining = 120
   @State private var isOtpMatching = false
@@ -17,7 +17,7 @@ struct OTPView: View {
   
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
-  var body: some View {
+  public var body: some View {
     VStack {
       
       HStack {
@@ -54,13 +54,13 @@ struct OTPView: View {
           }
         }, label: {
           Text("Request a new code")
-            .font(.custom(baseFont, size: 16))
+            .font(.custom(FyreKit.fonts.baseFont, size: 16))
             .foregroundColor(.white)
         })
           .padding()
           .disabled(timeRemaining != 0)
           .frame(maxWidth: .infinity)
-          .background(primaryColor)
+          .background(FyreKit.colors.primaryColor)
           .clipShape(RoundedRectangle(cornerRadius: 5))
           .padding(.horizontal)
       }
@@ -70,7 +70,7 @@ struct OTPView: View {
     }
   }
   
-  func getTimer() -> String{
+  public func getTimer() -> String{
     let minutes = Int(timeRemaining) / 60 % 60
     let seconds = Int(timeRemaining) % 60
     return String(format:"%02i:%02i", minutes, seconds)

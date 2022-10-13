@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension NSObject {
+public extension NSObject {
   public func log(_ message: String) {
     print("\(FyreKit.appName): \(message)")
   }

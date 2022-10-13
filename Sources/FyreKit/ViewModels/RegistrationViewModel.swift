@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class RegistrationViewModel: ObservableObject {
+public class RegistrationViewModel: ObservableObject {
   @Published var id = ""
   @Published var code = ""
   @Published var phoneNumber = ""
@@ -21,29 +21,29 @@ class RegistrationViewModel: ObservableObject {
   @Published var showProgressView = false
   @Published var error: ApiError?
   
-  var privacyUrl = FyreKit.fullUrl("privacy-policy")
-  var termsUrl = FyreKit.fullUrl("terms-of-service")
+  public var privacyUrl = FyreKit.fullUrl("privacy-policy")
+  public var termsUrl = FyreKit.fullUrl("terms-of-service")
   
-  init(number: String) {
+  public init(number: String) {
     self.phoneNumber = number
   }
   
-  var submitDisabled: Bool {
+  public var submitDisabled: Bool {
     firstName.isEmpty || lastName.isEmpty || email.isEmpty || dreNumber.isEmpty ||
     phoneNumber.isEmpty || password.isEmpty || agreeTerms == false
   }
   
-  var isValid: Bool {
+  public var isValid: Bool {
     phoneNumberValid || !(code.isEmpty && phoneNumber.isEmpty)
   }
   
-  var phoneNumberValid: Bool {
+  public var phoneNumberValid: Bool {
     let phoneRegex = "^[0-9+]{0,1}+[0-9]{5,16}$"
     let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
     return phoneTest.evaluate(with: phoneNumber)
   }
 
-  func clearForm() {
+  public func clearForm() {
     phoneNumber = ""
     firstName = ""
     lastName = ""
@@ -52,7 +52,7 @@ class RegistrationViewModel: ObservableObject {
     password = ""
   }
 
-  func register(completion: @escaping (Bool) -> Void) {
+  public func register(completion: @escaping (Bool) -> Void) {
     showProgressView = true
     let registration = Registration(
       phoneNumber: phoneNumber, firstName: firstName, lastName: lastName,

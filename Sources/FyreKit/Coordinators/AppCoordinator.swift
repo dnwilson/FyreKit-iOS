@@ -12,10 +12,10 @@ import UIKit
 import WebKit
 import KeychainAccess
  
-class AppCoordinator : NSObject {
+public class AppCoordinator : NSObject {
   private static var sharedProcessPool = WKProcessPool()
 
-  var rootViewController: UIViewController { navigationController }
+  public var rootViewController: UIViewController { navigationController }
   var window: UIWindow?
   var notificationCenter = NotificationCenter.default
   
@@ -86,7 +86,7 @@ class AppCoordinator : NSObject {
     }
   }
 
-  func start() {
+  public func start() {
     log("PUSH TOKEN = \(FyreKit.keychain["push-token"]!)")
     // Listen for login changes
     notificationCenter.addObserver(self, selector: #selector(loggedIn), name: NSNotification.Name("User Logged In"), object: nil)
@@ -235,7 +235,7 @@ class AppCoordinator : NSObject {
 }
 
 extension AppCoordinator: UITabBarDelegate {
-  func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+  public func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
     let url : URL
     let properties = PathProperties()
 
@@ -272,14 +272,14 @@ extension AppCoordinator: UITabBarDelegate {
 }
 
 extension AppCoordinator: SessionDelegate {
-  func sessionWebViewProcessDidTerminate(_ session: Turbo.Session) {
+  public func sessionWebViewProcessDidTerminate(_ session: Turbo.Session) {
   }
   
-  func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
+  public func session(_ session: Session, didProposeVisit proposal: VisitProposal) {
     route(url: proposal.url, options: proposal.options, properties: proposal.properties)
   }
 
-  func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error) {
+  public func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, error: Error) {
     if let turboError = error as? TurboError, case let .http(statusCode) = turboError, statusCode == 401 {
       log("ERROR CODE: \(turboError) -- \(statusCode)")
     } else if let errorPresenter = visitable as? ErrorPresenter {
@@ -293,15 +293,15 @@ extension AppCoordinator: SessionDelegate {
     }
   }
   
-  func sessionDidStartRequest(_ session: Session) {
+  public func sessionDidStartRequest(_ session: Session) {
   }
 
-  func sessionDidLoadWebView(_ session: Session) {
+  public func sessionDidLoadWebView(_ session: Session) {
     session.webView.navigationDelegate = self
     session.webView.uiDelegate = self
   }
 
-  func sessionDidFinishRequest(_ session: Session) {
+  public func sessionDidFinishRequest(_ session: Session) {
     let script = "document.querySelector(\"meta[name='turbo:authenticated']\").content"
     session.webView.evaluateJavaScript(script, completionHandler: { (html: Any?, error: Error?) in
       self.authenticated = html as? String
@@ -310,7 +310,7 @@ extension AppCoordinator: SessionDelegate {
 }
 
 extension AppCoordinator: WKNavigationDelegate {
-  func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+  public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     if navigationAction.navigationType == .linkActivated {
       // Any link that's not on the same domain as the Turbo root url will go through here
       // Other links on the domain, but that have an extension that is non-html will also go here
@@ -337,7 +337,7 @@ extension AppCoordinator: WKNavigationDelegate {
 }
 
 extension AppCoordinator: WKUIDelegate {
-  func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo,
+  public func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo,
                completionHandler: @escaping () -> Void) {
     
     let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
@@ -350,7 +350,7 @@ extension AppCoordinator: WKUIDelegate {
 }
 
 extension AppCoordinator: ScriptMessageDelegate {
-  func dismissModal() {
+  public func dismissModal() {
     if ((navigationController.presentedViewController) != nil) {
       navigationController.dismiss(animated: true)
       session.reload()
@@ -392,8 +392,8 @@ extension AppCoordinator: ScriptMessageDelegate {
     segmentedControl.selectedSegmentIndex = buttons.firstIndex(where: { URL(string: $0.path!) == session.activeVisitable?.visitableURL}) ?? 0
     
     segmentedControl.backgroundColor = UIColor(Color.white)
-    segmentedControl.selectedSegmentTintColor = UIColor(primaryColor)
-    segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor(primaryColor)], for: .normal)
+    segmentedControl.selectedSegmentTintColor = UIColor(FyreKit.colors.primaryColor)
+    segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor(FyreKit.colors.primaryColor)], for: .normal)
     segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
     segmentedControl.sizeToFit()
     segmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
@@ -494,20 +494,3 @@ extension UIAlertAction {
     }
   }
 }
-
-extension UIColor {
-  convenience init?(hexRGBA: String?) {
-    guard let rgba = hexRGBA, let val = Int(rgba.replacingOccurrences(of: "#", with: ""), radix: 16) else {
-      return nil
-    }
-    self.init(red: CGFloat((val >> 24) & 0xff) / 255.0, green: CGFloat((val >> 16) & 0xff) / 255.0, blue: CGFloat((val >> 8) & 0xff) / 255.0, alpha: CGFloat(val & 0xff) / 255.0)
-  }
-  
-  convenience init?(hexRGB: String?) {
-    guard let rgb = hexRGB else {
-      return nil
-    }
-    self.init(hexRGBA: rgb + "ff")
-  }
-}
-

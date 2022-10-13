@@ -37,7 +37,7 @@ class TurboViewController: UINavigationController, ErrorPresenter, UITabBarDeleg
       let appearance = tabBar.standardAppearance
 //      appearance.configureWithOpaqueBackground()
 //      appearance.configureWithTransparentBackground()
-      appearance.backgroundColor = UIColor(bgColor)
+      appearance.backgroundColor = UIColor(FyreKit.colors.bgColor)
       appearance.shadowImage = nil
       appearance.shadowColor = nil
       tabBar.standardAppearance = appearance

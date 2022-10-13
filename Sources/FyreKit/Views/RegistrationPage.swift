@@ -8,13 +8,11 @@
 import SwiftUI
 import Turbo
 
-struct RegistrationPage: View {
+public struct RegistrationPage: View {
   @ObservedObject var viewModel: RegistrationViewModel
-//  var termsUrl: String
-//  var privacyUrl: String
   var notificationCenter = NotificationCenter.default
   
-  var body: some View {
+  public var body: some View {
     ScrollView {
       VStack(alignment: .center) {
         Image("logo")
@@ -22,9 +20,9 @@ struct RegistrationPage: View {
           .frame(width: 150, height: 150, alignment: .center)
         
         Text("Post Your Signs")
-          .font(.custom(headingFont, size: 24))
+          .font(.custom(FyreKit.fonts.headingFont, size: 24))
           .fontWeight(.black)
-          .foregroundColor(headingColor)
+          .foregroundColor(FyreKit.colors.headingColor)
           .frame(alignment: .center)
           .multilineTextAlignment(.center)
       }
@@ -75,7 +73,7 @@ struct RegistrationPage: View {
             .padding(20)
           } else {
             Text("Sign Up")
-              .font(.custom(baseFont, size: 20))
+              .font(.custom(FyreKit.fonts.baseFont, size: 20))
               .padding(20)
               .frame(maxWidth: .infinity)
               .foregroundColor(.white)
@@ -83,16 +81,16 @@ struct RegistrationPage: View {
         }
         .disabled(viewModel.submitDisabled)
         .foregroundColor(.white)
-        .background(viewModel.submitDisabled ? disabledPrimaryColor : primaryColor)
+        .background(viewModel.submitDisabled ? FyreKit.colors.disabledPrimaryColor : FyreKit.colors.primaryColor)
         .cornerRadius(8)
         .padding(.bottom, 15)
 
         NavigationLink(destination: LoginView()) {
           Text("Login")
-            .font(.custom(baseFont, size: 18))
+            .font(.custom(FyreKit.fonts.baseFont, size: 18))
             .fontWeight(.semibold)
             .frame(maxWidth: .infinity, alignment: .center)
-            .foregroundColor(primaryColor)
+            .foregroundColor(FyreKit.colors.primaryColor)
             .padding(.vertical, 4)
         }
       }

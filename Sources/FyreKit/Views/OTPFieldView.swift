@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OTPFieldView: View {
+public struct OTPFieldView: View {
   var maxDigits: Int = 4
   
   @State var pin: String = "123"
@@ -35,9 +35,9 @@ struct OTPFieldView: View {
             .frame(width: 60, height: 60)
 
           Text(self.getDigits(at: index))
-            .font(.custom(baseFont, size: 50))
+            .font(.custom(FyreKit.fonts.baseFont, size: 50))
             .fontWeight(.thin)
-            .foregroundColor(textColor)
+            .foregroundColor(FyreKit.colors.textColor)
         }
       }
     }

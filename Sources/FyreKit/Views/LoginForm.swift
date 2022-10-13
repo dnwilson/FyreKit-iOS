@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct LoginForm: View {
+public struct LoginForm: View {
   @ObservedObject var viewModel = LoginViewModel()
   @StateObject var authentication = Authentication()
   var notificationCenter = NotificationCenter.default
   
-  var body: some View {
+  public var body: some View {
     VStack(alignment: .leading) {
       TextInputView("Phone number", text: $viewModel.credentials.phoneNumber, type: "phone")
         .padding(.bottom, 10)
@@ -39,7 +39,7 @@ struct LoginForm: View {
           .padding(20)
         } else {
           Text("Login")
-            .font(.custom(baseFont, size: 20))
+            .font(.custom(FyreKit.fonts.baseFont, size: 20))
             .padding(20)
             .frame(maxWidth: .infinity)
             .foregroundColor(.white)
@@ -47,7 +47,7 @@ struct LoginForm: View {
       }
       .disabled(viewModel.loginDisabled)
       .foregroundColor(.white)
-      .background(viewModel.loginDisabled ? disabledPrimaryColor : primaryColor)
+      .background(viewModel.loginDisabled ? FyreKit.colors.disabledPrimaryColor : FyreKit.colors.primaryColor)
       .cornerRadius(8)
     }
     .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)

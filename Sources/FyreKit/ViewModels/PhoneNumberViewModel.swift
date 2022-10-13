@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class PhoneNumberViewModel: ObservableObject {
+public class PhoneNumberViewModel: ObservableObject {
   @Published var id = ""
   @Published var number = ""
   @Published var code = ""
@@ -16,15 +16,15 @@ class PhoneNumberViewModel: ObservableObject {
   @Published var showProgressView = false
   @Published var error: ApiError?
   
-  var isValid: Bool {
+  public var isValid: Bool {
     return !number.isEmpty || !(code.isEmpty && number.isEmpty)
   }
   
-  var disabled: Bool {
+  public var disabled: Bool {
     return !isValid || showProgressView == true
   }
   
-  func checkPhoneNumber(completion: @escaping (Bool) -> Void) {
+  public func checkPhoneNumber(completion: @escaping (Bool) -> Void) {
     showProgressView = true
     
     let url = FyreKit.fullUrl("phone-numbers")
@@ -64,7 +64,7 @@ class PhoneNumberViewModel: ObservableObject {
     }
   }
   
-  func verifyPhoneNumber(completion: @escaping (Bool) -> Void) {
+  public func verifyPhoneNumber(completion: @escaping (Bool) -> Void) {
     showProgressView = true
     
     let url = FyreKit.fullUrl("phone-numbers/\(String(describing: id))/verify")

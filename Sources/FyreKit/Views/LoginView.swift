@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct LoginView: View {
-  var body: some View {
+public struct LoginView: View {
+  public init() {}
+
+  public var body: some View {
     VStack(alignment: .leading) {
       Spacer(minLength: 0)
       VStack {
@@ -16,9 +18,9 @@ struct LoginView: View {
           .resizable()
           .frame(width: 200, height: 200, alignment: .center)
         Text("Take My Signs")
-          .font(.custom(headingFont, size: 24))
+          .font(.custom(FyreKit.fonts.headingFont, size: 24))
           .fontWeight(.black)
-          .foregroundColor(headingColor)
+          .foregroundColor(FyreKit.colors.headingColor)
       }.frame(maxWidth: .infinity, alignment: .center)
       Spacer(minLength: 0)
 
@@ -27,8 +29,8 @@ struct LoginView: View {
   }
 }
 
-struct LoginView_Preview: PreviewProvider {
-  static var previews: some View {
+public struct LoginView_Preview: PreviewProvider {
+  public static var previews: some View {
     LoginView()
   }
 }

@@ -52,3 +52,9 @@ public struct AnimatedMenuBar: View {
 
   }
 }
+
+public struct AnimatedMenuBar_Previews: PreviewProvider {
+  public static var previews: some View {
+    AnimatedMenuBar(selectedIndex: .constant(0))
+  }
+}

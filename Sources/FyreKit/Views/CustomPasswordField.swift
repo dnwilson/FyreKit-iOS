@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomPasswordField: View {
+public struct CustomPasswordField: View {
   var label = "Password"
   @Binding var text: String
   @State var showPassword: Bool = false
@@ -17,7 +17,11 @@ struct CustomPasswordField: View {
     return !text.isEmpty || hasFocus
   }
   
-  var body: some View {
+  public init(text: Binding<String>) {
+    self._text = text
+  }
+  
+  public var body: some View {
     secureField()
     .padding(EdgeInsets(top: 12, leading: 12, bottom: 8, trailing: 12))
     .overlay(Text(label)
@@ -36,7 +40,7 @@ struct CustomPasswordField: View {
           .offset(x: -16)
       }), alignment: .trailing
     )
-    .overlay(RoundedRectangle(cornerRadius: 8).stroke(shrinkLabel ? primaryColor : Color(.placeholderText)))
+    .overlay(RoundedRectangle(cornerRadius: 8).stroke(shrinkLabel ? FyreKit.colors.primaryColor : Color(.placeholderText)))
   }
   
   @ViewBuilder
@@ -49,7 +53,7 @@ struct CustomPasswordField: View {
           hasFocus = false
         }
       })
-        .font(.custom(baseFont, size: 16))
+      .font(.custom(FyreKit.fonts.baseFont, size: 16))
         .keyboardType(.default)
         .autocapitalization(.none)
         .disableAutocorrection(true)
@@ -61,7 +65,7 @@ struct CustomPasswordField: View {
         .onTapGesture {
           hasFocus = true
         }
-        .font(.custom(baseFont, size: 16))
+        .font(.custom(FyreKit.fonts.baseFont, size: 16))
         .keyboardType(.default)
         .autocapitalization(.none)
         .disableAutocorrection(true)

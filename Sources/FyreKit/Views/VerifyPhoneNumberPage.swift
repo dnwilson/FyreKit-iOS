@@ -40,25 +40,25 @@ struct VerifyPhoneNumberPage: View {
             .frame(maxWidth: .infinity, alignment: .center)
           } else {
             Text("Verify")
-              .font(.custom(baseFont, size: 20))
+              .font(.custom(FyreKit.fonts.baseFont, size: 20))
               .padding(20)
               .frame(maxWidth: .infinity)
               .foregroundColor(.white)
           }
         }
         .disabled(viewModel.disabled)
-        .foregroundColor(textColor)
-        .background(viewModel.disabled ? disabledPrimaryColor : primaryColor)
+        .foregroundColor(FyreKit.colors.textColor)
+        .background(viewModel.disabled ? FyreKit.colors.disabledPrimaryColor : FyreKit.colors.primaryColor)
         .cornerRadius(8)
         
         HStack(spacing: 6) {
           Text("Didn't receive code?")
-            .foregroundColor(textColor)
+            .foregroundColor(FyreKit.colors.textColor)
           
           Button(action: {}) {
             Text("Request Again")
               .fontWeight(.bold)
-              .foregroundColor(primaryColor)
+              .foregroundColor(FyreKit.colors.primaryColor)
           }
         }
         .padding(.top, 10)

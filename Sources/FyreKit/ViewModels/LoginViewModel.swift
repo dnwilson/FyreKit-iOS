@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class LoginViewModel: ObservableObject {
+public class LoginViewModel: ObservableObject {
   @Published var credentials = Credentials()
   @Published var showProgressView = false
   @Published var error: ApiError?
@@ -16,7 +16,7 @@ class LoginViewModel: ObservableObject {
     credentials.phoneNumber.isEmpty || credentials.password.isEmpty || showProgressView == true
   }
   
-  func login(completion: @escaping (Bool) -> Void) {
+  public func login(completion: @escaping (Bool) -> Void) {
     showProgressView = true
     URLSession.shared.login(credentials: credentials) {
       [unowned self](result: Result<Bool, Error>) in
