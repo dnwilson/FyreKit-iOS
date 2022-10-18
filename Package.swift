@@ -33,7 +33,7 @@ let package = Package(
           .product(name: "iPhoneNumberField", package: "iPhoneNumberField"),
           .product(name: "AlertToast", package: "AlertToast")
         ],
-        path: "Source",
+        path: "Sources",
         resources: [
           .process("Resources")
         ]),
