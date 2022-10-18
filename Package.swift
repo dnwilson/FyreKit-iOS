@@ -18,7 +18,7 @@ let package = Package(
      .package(url: "https://github.com/hotwired/turbo-ios", from: "7.0.0-rc.7"),
      .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
      .package(url: "https://github.com/izmcm/iPhoneNumberField", from: "0.6.1"),
-     .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.0.0"),
+     .package(url: "https://github.com/firebase/firebase-ios-sdk", .upToNextMajor(from: "8.10.0")),
      .package(url: "https://github.com/elai950/AlertToast", from: "1.0.0")
   ],
   targets: [
