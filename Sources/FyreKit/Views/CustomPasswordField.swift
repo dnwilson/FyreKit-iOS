@@ -40,7 +40,7 @@ public struct CustomPasswordField: View {
           .offset(x: -16)
       }), alignment: .trailing
     )
-    .overlay(RoundedRectangle(cornerRadius: 8).stroke(shrinkLabel ? FyreKit.colors.primaryColor : Color(.placeholderText)))
+    .overlay(RoundedRectangle(cornerRadius: 8).stroke(shrinkLabel ? FyreKit.primaryColor : Color(.placeholderText)))
   }
   
   @ViewBuilder
@@ -53,7 +53,7 @@ public struct CustomPasswordField: View {
           hasFocus = false
         }
       })
-      .font(.custom(FyreKit.fonts.baseFont, size: 16))
+      .font(.custom(FyreKit.baseFont, size: 16))
         .keyboardType(.default)
         .autocapitalization(.none)
         .disableAutocorrection(true)
@@ -65,7 +65,7 @@ public struct CustomPasswordField: View {
         .onTapGesture {
           hasFocus = true
         }
-        .font(.custom(FyreKit.fonts.baseFont, size: 16))
+        .font(.custom(FyreKit.baseFont, size: 16))
         .keyboardType(.default)
         .autocapitalization(.none)
         .disableAutocorrection(true)

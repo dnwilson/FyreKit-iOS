@@ -13,7 +13,7 @@ public struct OTPView: View {
   @State private var isOtpMatching = false
   
   @ObservedObject var viewModel = PhoneNumberViewModel()
-  @ObservedObject var registrationVM: RegistrationViewModel
+  @ObservedObject var registrationVM: FyreKitRegistrationViewModel
   
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
@@ -54,13 +54,13 @@ public struct OTPView: View {
           }
         }, label: {
           Text("Request a new code")
-            .font(.custom(FyreKit.fonts.baseFont, size: 16))
+            .font(.custom(FyreKit.baseFont, size: 16))
             .foregroundColor(.white)
         })
           .padding()
           .disabled(timeRemaining != 0)
           .frame(maxWidth: .infinity)
-          .background(FyreKit.colors.primaryColor)
+          .background(FyreKit.primaryColor)
           .clipShape(RoundedRectangle(cornerRadius: 5))
           .padding(.horizontal)
       }
@@ -79,6 +79,6 @@ public struct OTPView: View {
 
 struct OTPView_Previews: PreviewProvider {
   static var previews: some View {
-    OTPView(registrationVM: RegistrationViewModel(number: "3475124367"))
+    OTPView(registrationVM: FyreKitRegistrationViewModel(number: "3475124367"))
   }
 }

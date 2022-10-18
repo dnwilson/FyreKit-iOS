@@ -27,9 +27,9 @@ public struct CheckPhoneNumberPage: View {
           .resizable()
           .frame(width: 200, height: 200, alignment: .center)
         Text("Take My Signs")
-          .font(.custom(FyreKit.fonts.headingFont, size: 24))
+          .font(.custom(FyreKit.headingFont, size: 24))
           .fontWeight(.black)
-          .foregroundColor(FyreKit.colors.headingColor)
+          .foregroundColor(FyreKit.headingColor)
       }.frame(maxWidth: .infinity, alignment: .center)
       
       Spacer()
@@ -55,7 +55,7 @@ public struct CheckPhoneNumberPage: View {
           .padding(20)
         } else {
           Text("Next")
-            .font(.custom(FyreKit.fonts.baseFont, size: 20))
+            .font(.custom(FyreKit.baseFont, size: 20))
             .padding(20)
             .frame(maxWidth: .infinity)
             .foregroundColor(.white)
@@ -63,7 +63,7 @@ public struct CheckPhoneNumberPage: View {
       }
       .disabled(viewModel.disabled)
       .foregroundColor(.white)
-      .background(viewModel.disabled ? FyreKit.colors.disabledPrimaryColor : FyreKit.colors.primaryColor)
+      .background(viewModel.disabled ? FyreKit.disabledPrimaryColor : FyreKit.primaryColor)
       .cornerRadius(8)
     }
     .sheet(isPresented: $isShowingModal) {

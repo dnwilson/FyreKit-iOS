@@ -9,7 +9,8 @@ import SwiftUI
 import Turbo
 
 public struct RegistrationPage: View {
-  @ObservedObject var viewModel: RegistrationViewModel
+  @ObservedObject var viewModel : FyreKitRegistrationViewModel
+
   var notificationCenter = NotificationCenter.default
   
   public var body: some View {
@@ -20,9 +21,9 @@ public struct RegistrationPage: View {
           .frame(width: 150, height: 150, alignment: .center)
         
         Text("Post Your Signs")
-          .font(.custom(FyreKit.fonts.headingFont, size: 24))
+          .font(.custom(FyreKit.headingFont, size: 24))
           .fontWeight(.black)
-          .foregroundColor(FyreKit.colors.headingColor)
+          .foregroundColor(FyreKit.headingColor)
           .frame(alignment: .center)
           .multilineTextAlignment(.center)
       }
@@ -30,29 +31,16 @@ public struct RegistrationPage: View {
       Spacer()
       
       VStack {
-        TextInputView("Phone Number", text: $viewModel.phoneNumber, type: "phone")
-          .disabled(true)
-          .padding(.bottom, 10)
+        ForEach(viewModel.formInputs) { input in
+          TextInputView(input.label, text: input.$value, type: input.type).padding(.bottom, 10)
+        }
         
-        TextInputView("First name", text: $viewModel.firstName)
-          .padding(.bottom, 10)
-        
-        TextInputView("Last name", text: $viewModel.lastName)
-          .padding(.bottom, 10)
-        
-        TextInputView("DRE Number", text: $viewModel.dreNumber)
-          .padding(.bottom, 10)
-        
-        TextInputView("Email", text: $viewModel.email, type: "email")
-          .padding(.bottom, 10)
-        
-        TextInputView("Password", text: $viewModel.password, type: "password")
-          .padding(.bottom, 10)
-        
-        HStack(alignment: .top) {
-          Toggle("Terms", isOn: $viewModel.agreeTerms)
-            .labelsHidden()
-          Text("I agree to the [Terms of Service]($viewModel.termsUrl), [Privacy Policy]($viewModel.privacyUrl), Arbitration of Disputes and waiver of class actions claims.")
+        if (FyreKit.termsMessage.isPresent) {
+          HStack(alignment: .top) {
+            Toggle("Terms", isOn: $viewModel.agreeTerms)
+              .labelsHidden()
+            Text("I agree to the [Terms of Service]($viewModel.termsUrl), [Privacy Policy]($viewModel.privacyUrl), Arbitration of Disputes and waiver of class actions claims.")
+          }
         }
         
         Button(action: {
@@ -73,7 +61,7 @@ public struct RegistrationPage: View {
             .padding(20)
           } else {
             Text("Sign Up")
-              .font(.custom(FyreKit.fonts.baseFont, size: 20))
+              .font(.custom(FyreKit.baseFont, size: 20))
               .padding(20)
               .frame(maxWidth: .infinity)
               .foregroundColor(.white)
@@ -81,16 +69,16 @@ public struct RegistrationPage: View {
         }
         .disabled(viewModel.submitDisabled)
         .foregroundColor(.white)
-        .background(viewModel.submitDisabled ? FyreKit.colors.disabledPrimaryColor : FyreKit.colors.primaryColor)
+        .background(viewModel.submitDisabled ? FyreKit.disabledPrimaryColor : FyreKit.primaryColor)
         .cornerRadius(8)
         .padding(.bottom, 15)
 
         NavigationLink(destination: LoginView()) {
           Text("Login")
-            .font(.custom(FyreKit.fonts.baseFont, size: 18))
+            .font(.custom(FyreKit.baseFont, size: 18))
             .fontWeight(.semibold)
             .frame(maxWidth: .infinity, alignment: .center)
-            .foregroundColor(FyreKit.colors.primaryColor)
+            .foregroundColor(FyreKit.primaryColor)
             .padding(.vertical, 4)
         }
       }
@@ -105,6 +93,6 @@ public struct RegistrationPage: View {
 
 struct RegistrationPage_Previews: PreviewProvider {
   static var previews: some View {
-    RegistrationPage(viewModel: RegistrationViewModel(number: "3475124367")).preferredColorScheme(.dark)
+    RegistrationPage(viewModel: FyreKitRegistrationViewModel(number: "3475124367")).preferredColorScheme(.dark)
   }
 }

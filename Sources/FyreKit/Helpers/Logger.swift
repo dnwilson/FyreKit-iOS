@@ -5,10 +5,10 @@
 //  Created by Dane Wilson on 10/11/22.
 //
 
-import Foundation
+import SwiftUI
 
-public extension NSObject {
-  func log(_ message: String) {
-    print("\(FyreKit.appName): \(message)")
+public class Log {
+  public class func i(_ message: String) {
+    print("[\(FyreKit.appName)] \(message)")
   }
 }

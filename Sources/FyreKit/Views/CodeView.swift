@@ -13,9 +13,9 @@ public struct CodeView: View {
   public var body: some View {
     VStack(spacing: 10) {
       Text(code)
-        .foregroundColor(FyreKit.colors.textColor)
+        .foregroundColor(FyreKit.textColor)
         .fontWeight(.bold)
-        .font(.custom(FyreKit.fonts.headingFont, size: 24))
+        .font(.custom(FyreKit.headingFont, size: 24))
         .frame(height: 45)
         .padding()
         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(.placeholderText)))

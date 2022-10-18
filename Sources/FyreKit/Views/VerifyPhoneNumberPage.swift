@@ -40,31 +40,31 @@ struct VerifyPhoneNumberPage: View {
             .frame(maxWidth: .infinity, alignment: .center)
           } else {
             Text("Verify")
-              .font(.custom(FyreKit.fonts.baseFont, size: 20))
+              .font(.custom(FyreKit.baseFont, size: 20))
               .padding(20)
               .frame(maxWidth: .infinity)
               .foregroundColor(.white)
           }
         }
         .disabled(viewModel.disabled)
-        .foregroundColor(FyreKit.colors.textColor)
-        .background(viewModel.disabled ? FyreKit.colors.disabledPrimaryColor : FyreKit.colors.primaryColor)
+        .foregroundColor(FyreKit.textColor)
+        .background(viewModel.disabled ? FyreKit.disabledPrimaryColor : FyreKit.primaryColor)
         .cornerRadius(8)
         
         HStack(spacing: 6) {
           Text("Didn't receive code?")
-            .foregroundColor(FyreKit.colors.textColor)
+            .foregroundColor(FyreKit.textColor)
           
           Button(action: {}) {
             Text("Request Again")
               .fontWeight(.bold)
-              .foregroundColor(FyreKit.colors.primaryColor)
+              .foregroundColor(FyreKit.primaryColor)
           }
         }
         .padding(.top, 10)
       }
       .sheet(isPresented: $isShowingModal) {
-        RegistrationPage(viewModel: RegistrationViewModel(number: viewModel.number))
+        RegistrationPage(viewModel: FyreKit.buildRegistrationViewModel(login: viewModel.number))
       }
       .alert(item: $viewModel.error) { error in
         Alert(title: Text("Error"), message: Text(error.message()))

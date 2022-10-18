@@ -11,6 +11,7 @@ import UIKit
 import UserNotifications
 
 open class FyreKitAppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate, UNUserNotificationCenterDelegate {
+
   public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     FirebaseApp.configure()
     Messaging.messaging().delegate = self

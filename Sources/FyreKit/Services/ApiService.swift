@@ -9,17 +9,16 @@ import Foundation
 import Turbo
 import WebKit
 
-struct ApiError: Codable, Error, Identifiable {
-  var id: String { String(self.code) }
-  var error: String = ""
-  var code: Int = 0
+public struct ApiError: Codable, Error, Identifiable {
+  public var id: String { String(self.code) }
+  public var error: String = ""
+  public var code: Int = 0
   
-  func message() -> String { self.error }
+  public func message() -> String { self.error }
 }
 
-
-extension URLSession {
-  func request(url: URL, type: String = "GET") -> URLRequest {
+public class ApiService {
+  static func request(url: URL, type: String = "GET") -> URLRequest {
     var request = URLRequest(url: url)
     request.httpMethod = type
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -30,11 +29,25 @@ extension URLSession {
       var request = URLRequest(url: url)
       request.setValue("Bearer: \(token)", forHTTPHeaderField: "Authorization")
     }
-    
+
     return request
   }
   
-  func get<T: Codable>(
+  public static func get(_ path: String) -> String {
+    var text: String = ""
+    let semaphore = DispatchSemaphore(value: 0)
+    let task = URLSession.shared.dataTask(with: FyreKit.fullUrl(path)) {(data, response, error) in
+      if (data != nil) {
+        text = String(data: data!, encoding: String.Encoding.utf8)!
+      }
+      semaphore.signal()
+    }
+    task.resume()
+    semaphore.wait()
+    return text
+  }
+
+  public static func get<T: Codable>(
     url: URL?,
     expecting: T.Type,
     completion: @escaping (Result<T, Error>) -> Void
@@ -43,10 +56,10 @@ extension URLSession {
       completion(.failure(ApiError(error: "Invalid url", code: 1)))
       return
     }
-    
+
     let request = request(url: url)
-    
-    let task = dataTask(with: request) { data, _, error in
+
+    let task = URLSession.shared.dataTask(with: request) { data, _, error in
       guard let data = data else {
         if let error = error {
           completion(.failure(error))
@@ -55,7 +68,7 @@ extension URLSession {
         }
         return
       }
-      
+
       do {
         let result = try JSONDecoder().decode(expecting, from: data)
         completion(.success(result))
@@ -64,28 +77,22 @@ extension URLSession {
         completion(.failure(error))
       }
     }
-    
+
     task.resume()
   }
-  
-  func post<T: Codable>(
-    url: URL?,
+
+  public static func post<T: Codable>(
+    path: String,
     body: [String: Any],
     expecting: T.Type,
     completion: @escaping (Result<T, Error>) -> Void
   ) {
-    guard let url = url else {
-      completion(.failure(ApiError(error: "Invalid url", code: 1)))
-      return
-    }
-    
-    var request = request(url: url, type: "POST")
-    
+    var request = request(url: FyreKit.fullUrl(path), type: "POST")
     let json: Data = try! JSONSerialization.data(withJSONObject: body, options: [])
-    
+
     request.httpBody = json
-    
-    let task = dataTask(with: request) { data, response, error in
+
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
       guard
         error == nil,
         let response = response as? HTTPURLResponse,
@@ -101,7 +108,7 @@ extension URLSession {
         }
         return
       }
-      
+
       do {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -112,18 +119,18 @@ extension URLSession {
         completion(.failure(error))
       }
     }
-    
+
     task.resume()
   }
-  
-  func login(credentials: Credentials, completion: @escaping (Result<Bool, Error>) -> Void) {
+
+  public static func login(credentials: Credentials, completion: @escaping (Result<Bool, Error>) -> Void) {
     var request = request(url: FyreKit.fullUrl("api/login"), type: "POST")
 
     let encoder = JSONEncoder()
     encoder.keyEncodingStrategy = .convertToSnakeCase
     request.httpBody = try? encoder.encode(credentials)
-    
-    let task = dataTask(with: request) { data, response, error in
+
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
       guard
         error == nil,
         let response = response as? HTTPURLResponse,
@@ -149,24 +156,25 @@ extension URLSession {
         cookies.forEach { cookie in
           cookieStore.setCookie(cookie, completionHandler: nil)
         }
+
         FyreKit.setKeychainValue(token.token, key: "access-token")
         Session().reload()
         FyreKit.setPref(true, key: "LoggedIn")
         completion(.success(true))
       }
     }
-    
+
     task.resume()
   }
-  
-  func register(registration: Registration, completion: @escaping (Result<Bool, Error>) -> Void) {
+
+  public static func register(registration: FyreKitRegistration, completion: @escaping (Result<Bool, Error>) -> Void) {
     var request = request(url: FyreKit.fullUrl("api/register"), type: "POST")
 
     let encoder = JSONEncoder()
     encoder.keyEncodingStrategy = .convertToSnakeCase
     request.httpBody = try? encoder.encode(registration)
-    
-    let task = dataTask(with: request) { data, response, error in
+
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
       guard
         error == nil,
         let response = response as? HTTPURLResponse,
@@ -187,7 +195,7 @@ extension URLSession {
 
         return
       }
-      
+
       DispatchQueue.main.async {
         let cookies = HTTPCookie.cookies(withResponseHeaderFields: headers, for: FyreKit.rootURL)
         HTTPCookieStorage.shared.setCookies(cookies, for: FyreKit.rootURL, mainDocumentURL: nil)
@@ -201,10 +209,10 @@ extension URLSession {
         completion(.success(true))
       }
     }
-    
+
     task.resume()
   }
-  
+
   private struct AccessToken: Decodable {
     let token: String
   }

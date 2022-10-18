@@ -2,26 +2,38 @@ import KeychainAccess
 import SwiftUI
 import Turbo
 
+//public protocol Configuratable {
+//  public static let rootUrl : String
+//}
+
 @available(iOS 15, *)
-public struct FyreKit {
+public class FyreKit {
+  public static var registerable: Registerable = FyreKitRegistration()
+  public static func buildRegistrationViewModel(login: String) -> FyreKitRegistrationViewModel {
+    return FyreKitRegistrationViewModel(number: login)
+  }
+  public static var termsMessage: String = ""
+  
   // MARK: - Keys
   enum Keys {
     enum Plist {
       static let rootURL = "ROOT_URL"
       static let demoURL = "DEMO_URL"
       static let sendPushToken = "SEND_PUSH_TOKEN"
+      static let appName = "APP_NAME"
     }
   }
   
-  public enum colors {
-    public static let accentColor = getColorFromConfig("ACCENT_COLOR")
-    public static let bgColor = getColorFromConfig("BG_COLOR")
-    public static let borderColor = getColorFromConfig("BORDER_COLOR")
-    public static let disabledPrimaryColor = getColorFromConfig("PRIMARY_COLOR").opacity(0.75)
-    public static let headingColor = getColorFromConfig("PRIMARY_COLOR")
-    public static let primaryColor = getColorFromConfig("PRIMARY_COLOR")
-    public static let textColor = getColorFromConfig("TEXT_COLOR")
-  }
+  public static let accentColor = getColorFromConfig("ACCENT_COLOR")
+  public static let bgColor = getColorFromConfig("BG_COLOR")
+  public static let borderColor = getColorFromConfig("BORDER_COLOR")
+  public static let disabledPrimaryColor = getColorFromConfig("PRIMARY_COLOR").opacity(0.25)
+  public static let headingColor = getColorFromConfig("PRIMARY_COLOR")
+  public static let primaryColor = getColorFromConfig("PRIMARY_COLOR")
+  public static let textColor = getColorFromConfig("TEXT_COLOR")
+  
+  public static let baseFont = getFontFromConfig("BASE_FONT")
+  public static let headingFont = getFontFromConfig("HEADING_FONT")
 
   public static var defaults: [String: [String: Any]] {
     return(
@@ -41,10 +53,6 @@ public struct FyreKit {
     )
   }
   
-  public enum fonts {
-    public static let baseFont = getFontFromConfig("BASE_FONT")
-    public static let headingFont = getFontFromConfig("HEADING_FONT")
-  }
   
   private static func getColorFromConfig(_ key: String) -> Color {
     if let colorValues = infoDictionary[key] as? String {
@@ -71,22 +79,34 @@ public struct FyreKit {
   private init() {
   }
   
-  private static let preferences: UserDefaults = {
+  public static func stringToDictionary(text: String) -> [String: Any]? {
+    if let data = text.data(using: .utf8) {
+      do {
+        return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+      }
+      catch {
+        print(error.localizedDescription)
+      }
+    }
+    return nil
+  }
+  
+  public static let preferences: UserDefaults = {
     return UserDefaults.standard
   }()
   
   public static func toggleDemoMode() {
     preferences.set(!preferences.bool(forKey: "DemoMode"), forKey: "DemoMode")
   }
-  
-  public static var appName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-  public static var loggedIn: Bool = preferences.bool(forKey: "LoggedIn")
-  public static var isDemoMode: Bool = preferences.bool(forKey: "DemoMode")
-  public static var hasPushToken: Bool = preferences.bool(forKey: "PushTokenSaved")
-  public static var hasAuthToken: Bool = keychain["access-token"] != nil
-  public static var authToken = keychain["access-token"]
-  public static var loginHeaderMessage = infoDictionary["LOGIN_HEADER_MESSAGE"] as? String ?? "FyreKit"
 
+  public static var appName : String { infoDictionary[Keys.Plist.appName] as? String ?? "FyreKit" }
+  public static var loggedIn : Bool { preferences.bool(forKey: "LoggedIn") }
+  public static var isDemoMode : Bool { preferences.bool(forKey: "DemoMode") }
+  public static var pushTokenSaved : Bool { preferences.bool(forKey: "PushTokenSaved") }
+  public static var hasAuthToken : Bool { authToken?.isPresent ?? false }
+  public static var authToken : String? { keychain["access-token"] }
+  public static var pushToken : String? { keychain["push-token"] }
+  public static var loginHeaderMessage : String { infoDictionary["LOGIN_HEADER_MESSAGE"] as? String ?? "FyreKit" }
   
   // MARK: - Plist
   private static let infoDictionary: [String: Any] = {
@@ -122,13 +142,9 @@ public struct FyreKit {
   }
   
   public static func fullUrl(_ url: String) -> URL {
-    return rootURL.appendingPathComponent(url)
+    return URL(string: url, relativeTo: rootURL)!
   }
-  
-  public static func setPushTokenSaved(_ isSaved: Bool) {
-    preferences.set(isSaved, forKey: "PushTokenSaved")
-  }
-  
+
   public static func setPref(_ value: Any, key: String) {
     preferences.set(value, forKey: key)
   }

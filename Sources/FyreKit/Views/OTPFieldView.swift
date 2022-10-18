@@ -35,9 +35,9 @@ public struct OTPFieldView: View {
             .frame(width: 60, height: 60)
 
           Text(self.getDigits(at: index))
-            .font(.custom(FyreKit.fonts.baseFont, size: 50))
+            .font(.custom(FyreKit.baseFont, size: 50))
             .fontWeight(.thin)
-            .foregroundColor(FyreKit.colors.textColor)
+            .foregroundColor(FyreKit.textColor)
         }
       }
     }

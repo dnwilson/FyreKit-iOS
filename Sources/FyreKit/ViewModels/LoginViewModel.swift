@@ -13,16 +13,17 @@ public class LoginViewModel: ObservableObject {
   @Published var error: ApiError?
   
   var loginDisabled: Bool {
-    credentials.phoneNumber.isEmpty || credentials.password.isEmpty || showProgressView == true
+    credentials.login.isEmpty || credentials.password.isEmpty || showProgressView == true
   }
   
   public func login(completion: @escaping (Bool) -> Void) {
     showProgressView = true
-    URLSession.shared.login(credentials: credentials) {
+    ApiService.login(credentials: credentials) {
       [unowned self](result: Result<Bool, Error>) in
       showProgressView = false
       switch result {
       case .success:
+        Log.i("RESULT \(result)")
         completion(true)
       case .failure(let authError):
         credentials = Credentials()
@@ -32,3 +33,4 @@ public class LoginViewModel: ObservableObject {
     }
   }
 }
+

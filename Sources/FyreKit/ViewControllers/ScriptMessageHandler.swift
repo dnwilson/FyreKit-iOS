@@ -72,7 +72,7 @@ public class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
 //      let longitude = body["longitude"] as! Double
 //      delegate?.addMapLink(location: TMSLocation(latitude: latitude, longitude: longitude))
     default:
-      log("Unsupported message type for \(name)")
+      Log.i("Unsupported message type for \(name)")
     }
   }
 }

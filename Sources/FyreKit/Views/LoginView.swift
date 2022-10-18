@@ -18,9 +18,9 @@ public struct LoginView: View {
           .resizable()
           .frame(width: 200, height: 200, alignment: .center)
         Text("Take My Signs")
-          .font(.custom(FyreKit.fonts.headingFont, size: 24))
+          .font(.custom(FyreKit.headingFont, size: 24))
           .fontWeight(.black)
-          .foregroundColor(FyreKit.colors.headingColor)
+          .foregroundColor(FyreKit.headingColor)
       }.frame(maxWidth: .infinity, alignment: .center)
       Spacer(minLength: 0)
 

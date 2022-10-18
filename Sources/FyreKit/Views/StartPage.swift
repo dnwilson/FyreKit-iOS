@@ -29,9 +29,7 @@ public struct StartPage: View {
   }
 
   let imageExists: Bool = UIImage(named: "logo") != nil
-  let image : Image = Image("logo") ?? Image("logo", bundle: .module)
-  
-  public init() {}
+  let image : Image = Image("logo")
   
   public var body: some View {
     NavigationView {
@@ -54,7 +52,7 @@ public struct StartPage: View {
           .padding(.bottom, 40)
         
         Text(FyreKit.loginHeaderMessage)
-          .font(.custom(FyreKit.fonts.headingFont, size: 24))
+          .font(.custom(FyreKit.headingFont, size: 24))
           .fontWeight(.bold)
           .foregroundColor(.white)
           .lineLimit(20)
@@ -66,14 +64,14 @@ public struct StartPage: View {
           currentPage = .registration
         }) {
           Text("Get Started")
-            .font(.custom(FyreKit.fonts.baseFont, size: 18))
+            .font(.custom(FyreKit.baseFont, size: 18))
             .fontWeight(.semibold)
             .padding(.vertical, 18)
             .frame(maxWidth: CGFloat(250.0), alignment: .center)
             .background(Color.white)
             .cornerRadius(10)
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-            .foregroundColor(FyreKit.colors.primaryColor)
+            .foregroundColor(FyreKit.primaryColor)
         }
         .padding(.horizontal, 30)
         .offset(y: 0)
@@ -83,7 +81,7 @@ public struct StartPage: View {
 
         }) {
           Text("Login")
-            .font(.custom(FyreKit.fonts.baseFont, size: 16))
+            .font(.custom(FyreKit.baseFont, size: 16))
             .padding(.vertical, 9)
             .frame(maxWidth: CGFloat(250.0))
             .foregroundColor(.white)
@@ -91,14 +89,14 @@ public struct StartPage: View {
         .padding(.top, 16)
         .padding(.bottom, 16)
         .foregroundColor(.white)
-        .background(FyreKit.colors.primaryColor)
+        .background(FyreKit.primaryColor)
         .cornerRadius(8)
         
         Spacer(minLength: 0)
       }
       .padding(.top, getRect().height < 750 ? 0 : 20)
       .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .background(FyreKit.colors.primaryColor)
+      .background(FyreKit.primaryColor)
       .toast(isPresenting: $showToast) {
         let toastMessage = FyreKit.isDemoMode ? "activated" : "deactivated"
         return AlertToast(displayMode: .banner(.pop), type: .regular, title: "Demo mode \(toastMessage)!")

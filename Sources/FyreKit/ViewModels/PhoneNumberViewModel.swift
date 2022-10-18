@@ -26,16 +26,15 @@ public class PhoneNumberViewModel: ObservableObject {
   
   public func checkPhoneNumber(completion: @escaping (Bool) -> Void) {
     showProgressView = true
-    
-    let url = FyreKit.fullUrl("phone-numbers")
+
     let data = [
       "phone_number": [
         "phone_number": number
       ]
     ]
     
-    URLSession.shared.post(
-      url: url, body: data, expecting: PhoneNumber.self
+    ApiService.post(
+      path: "phone-numbers", body: data, expecting: PhoneNumber.self
     ) { [weak self] result in
       
       DispatchQueue.main.async {
@@ -67,7 +66,6 @@ public class PhoneNumberViewModel: ObservableObject {
   public func verifyPhoneNumber(completion: @escaping (Bool) -> Void) {
     showProgressView = true
     
-    let url = FyreKit.fullUrl("phone-numbers/\(String(describing: id))/verify")
     let data = [
       "phone_number": [
         "id": id,
@@ -76,8 +74,8 @@ public class PhoneNumberViewModel: ObservableObject {
       ]
     ]
     
-    URLSession.shared.post(
-      url: url, body: data, expecting: PhoneNumber.self
+    ApiService.post(
+      path: "phone-numbers/\(String(describing: id))/verify", body: data, expecting: PhoneNumber.self
     ) { [weak self] result in
       
       DispatchQueue.main.async {

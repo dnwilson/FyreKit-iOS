@@ -39,7 +39,7 @@ public struct LoginForm: View {
           .padding(20)
         } else {
           Text("Login")
-            .font(.custom(FyreKit.fonts.baseFont, size: 20))
+            .font(.custom(FyreKit.baseFont, size: 20))
             .padding(20)
             .frame(maxWidth: .infinity)
             .foregroundColor(.white)
@@ -47,7 +47,7 @@ public struct LoginForm: View {
       }
       .disabled(viewModel.loginDisabled)
       .foregroundColor(.white)
-      .background(viewModel.loginDisabled ? FyreKit.colors.disabledPrimaryColor : FyreKit.colors.primaryColor)
+      .background(viewModel.loginDisabled ? FyreKit.disabledPrimaryColor : FyreKit.primaryColor)
       .cornerRadius(8)
     }
     .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)

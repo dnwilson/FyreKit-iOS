@@ -5,6 +5,7 @@
 //  Created by Dane Wilson on 10/11/22.
 //
 
+import UIKit
 
 public struct TurboButton {
   var title: String?
@@ -27,4 +28,8 @@ public struct TurboButton {
 
     return list
   }
+}
+
+class TurboUIBarButton: UIBarButtonItem {
+  var actionString: String = ""
 }
