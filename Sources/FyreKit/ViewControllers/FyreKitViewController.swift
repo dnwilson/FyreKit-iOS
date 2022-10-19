@@ -53,7 +53,6 @@ class FyreKitViewController : UINavigationController {
   func visit(url: URL, options: VisitOptions, properties: PathProperties) {
     let action = options.action
     if (presentedViewController != nil) {
-      print("TURBO: presented", presentedViewController)
       dismiss(animated: true)
     }
 

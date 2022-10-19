@@ -8,7 +8,6 @@
 import SwiftUI
 import iPhoneNumberField
 
-
 public struct CheckPhoneNumberPage: View {
   @ObservedObject var viewModel = PhoneNumberViewModel()
   @StateObject var authentication = Authentication()

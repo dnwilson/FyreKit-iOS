@@ -106,7 +106,9 @@ public class FyreKit {
   public static var hasAuthToken : Bool { authToken?.isPresent ?? false }
   public static var authToken : String? { keychain["access-token"] }
   public static var pushToken : String? { keychain["push-token"] }
-  public static var loginHeaderMessage : String { infoDictionary["LOGIN_HEADER_MESSAGE"] as? String ?? "FyreKit" }
+  public static var loginHeaderMessage : String {
+    Log.i("LOGIN_HEADER_MESSAGE --- \(infoDictionary)")
+    return infoDictionary["LOGIN_HEADER_MESSAGE"] as? String ?? "FyreKit" }
   
   // MARK: - Plist
   private static let infoDictionary: [String: Any] = {
