@@ -12,7 +12,7 @@ import WebKit
 import SwiftUI
 import SafariServices
 
-class FyreKitViewController : UINavigationController {
+public class FyreKitViewController : UINavigationController {
   private lazy var tabBar = makeTabBar()
   private lazy var session = makeSession()
   private lazy var modalSession = makeSession()
@@ -21,7 +21,7 @@ class FyreKitViewController : UINavigationController {
   
   private var nextActionButton: TurboButton?
   private var segmentedButtons: [TurboButton]?
-  private var menuOptions: [[String: String]]?
+  private var menuOptions: [TurboButton]?
   
   var notificationCenter = NotificationCenter.default
   
@@ -30,9 +30,9 @@ class FyreKitViewController : UINavigationController {
     .server(FyreKit.fullUrl("turbo.json"))
   ])
   
-  override func viewDidLoad() {
+  public override func viewDidLoad() {
     super.viewDidLoad()
-
+    
     loadNavBar()
     loadTabBar()
     loadTabs()
@@ -40,55 +40,80 @@ class FyreKitViewController : UINavigationController {
     
     self.title = FyreKit.appName
     
-    Log.i("Main app loaded")
     visit(url: FyreKit.rootURL, options: VisitOptions(action: .replace),
           properties: pathConfiguration.properties(for: FyreKit.rootURL))
   }
   
-  override func viewWillLayoutSubviews() {
+  public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     tabBar.invalidateIntrinsicContentSize()
   }
   
   func visit(url: URL, options: VisitOptions, properties: PathProperties) {
     let action = options.action
+    
     if (presentedViewController != nil) {
       dismiss(animated: true)
     }
-
-    let viewController = TurboViewController(url: url)
+    
+    let viewController = makeViewController(for: url, properties: properties)
     viewController.title = self.title
-
-    if url.path == "/", !viewControllers.isEmpty {
-      print("TURBO: is home and view.empty", url.path == "/", !viewControllers.isEmpty)
-      popViewController(animated: true)
-      viewControllers = Array() + [viewController]
-      session.visit(viewController)
-    } else if isModal(properties) {
-      print("TURBO: is modal", isModal(properties))
-      present(viewController, animated: true)
-      modalSession.visit(viewController)
+    // We support three types of navigation in the app: advance, replace, and modal
+    if isModal(properties) {
+      Log.i("Modal controller")
+      let modalNavController = UINavigationController(rootViewController: viewController)
+      present(modalNavController, animated: true)
     } else if isReplace(properties) {
-      viewControllers = Array(viewControllers.dropLast()) + [viewController]
-      session.visit(viewController)
+      Log.i("isReplace")
+      let viewControllers = Array(viewControllers.dropLast()) + [viewController]
+      setViewControllers(viewControllers, animated: false)
+      completeVisit(viewController: viewController as! VisitableViewController, options: options, properties: properties)
       session.reload()
-    } else if session.activeVisitable?.visitableURL == url {
-      let viewControllers = viewControllers.dropLast()
-      setViewControllers(viewControllers + [viewController], animated: false)
-      session.visit(viewController)
-    } else if action == .advance {
-      pushViewController(viewController, animated: true)
-      session.visit(viewController)
+      return
     } else if action == .replace {
-      viewControllers = Array() + [viewController]
-      session.visit(viewController)
-    } else if action == .restore {
-      popViewController(animated: true)
-      session.visit(viewController)
+      let viewControllers = [viewController]
+      setViewControllers(viewControllers, animated: false)
     } else {
       pushViewController(viewController, animated: true)
-      session.visit(viewController)
     }
+    
+    completeVisit(viewController: viewController as! VisitableViewController, options: options, properties: properties)
+  }
+  
+  func completeVisit(viewController: VisitableViewController, options: VisitOptions, properties: PathProperties) {
+    // Each Session corresponds to a single web view. A good rule of thumb
+    // is to use a session per navigation stack. Here we're using a different session
+    // when presenting a modal. We keep that around for any modal presentations so
+    // we don't have to create more than we need since each new session incurs a cold boot visit cost
+    if isModal(properties) {
+      modalSession.visit(viewController, options: options)
+    } else {
+      session.visit(viewController, options: options)
+    }
+  }
+  
+  private func makeViewController(for url: URL, properties: PathProperties = [:]) -> UIViewController {
+    // There are many options for determining how to map urls to view controllers
+    // The demo uses the path configuration for determining which view controller and presentation
+    // to use, but that's completely optional. You can use whatever logic you prefer to determine
+    // how you navigate and route different URLs.
+    
+    //    if let viewController = properties["view-controller"] as? String {
+    //      switch viewController {
+    //      case "numbers":
+    //        let numbersVC = NumbersViewController()
+    //        numbersVC.url = url
+    //        return numbersVC
+    //      case "numbersDetail":
+    //        let alertController = UIAlertController(title: "Number", message: "\(url.lastPathComponent)", preferredStyle: .alert)
+    //        alertController.addAction(.init(title: "OK", style: .default, handler: nil))
+    //        return alertController
+    //      default:
+    //        assertionFailure("Invalid view controller, defaulting to WebView")
+    //      }
+    //    }
+    
+    return TurboViewController(url: url)
   }
   
   func makeTabBar() -> UITabBar {
@@ -103,7 +128,7 @@ class FyreKitViewController : UINavigationController {
     tabBar.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
     return tabBar
   }
-
+  
   func loadSettings() -> Dictionary<String, AnyObject> {
     let text: String = ApiService.get("turbo.json")
     if let json = FyreKit.stringToDictionary(text: text) {
@@ -119,14 +144,14 @@ class FyreKitViewController : UINavigationController {
   }
   
   func loadNavBar() {
-    if let navbar = settings["navbar"] as? Dictionary<String, String> {
+    if settings["navbar"] is Dictionary<String, String> {
       
       let standardAppearance = UINavigationBarAppearance()
       standardAppearance.configureWithOpaqueBackground()
       standardAppearance.titleTextAttributes = [.foregroundColor: UIColor(FyreKit.primaryColor) as Any]
       standardAppearance.backgroundColor = UIColor(FyreKit.bgColor)
       navigationBar.standardAppearance = standardAppearance;
-
+      
       let scrollEdgeAppearance = UINavigationBarAppearance()
       scrollEdgeAppearance.configureWithOpaqueBackground()
       scrollEdgeAppearance.titleTextAttributes = [.foregroundColor: UIColor(FyreKit.primaryColor) as Any]
@@ -136,7 +161,7 @@ class FyreKitViewController : UINavigationController {
   }
   
   func loadTabBar() {
-    if let tabbar = settings["tabbar"] as? Dictionary<String, String> {
+    if settings["tabbar"] is Dictionary<String, String> {
       UITabBar.appearance().barTintColor = UIColor(FyreKit.bgColor)
       UITabBar.appearance().tintColor = UIColor(FyreKit.primaryColor)
       UITabBar.appearance().unselectedItemTintColor = UIColor(FyreKit.disabledPrimaryColor)
@@ -149,10 +174,10 @@ class FyreKitViewController : UINavigationController {
       for (index, tab) in tabs.enumerated() {
         let title = tab["title"] as? String
         let icon_ios = tab["icon_ios"] as? String
-//        let protected = tab["protected"] as? Bool ?? false
+        //        let protected = tab["protected"] as? Bool ?? false
         let image = UIImage(systemName: icon_ios!)
         let tabBarItem = UITabBarItem(title: title, image: image, tag: index)
-
+        
         tabBar.items?.append(tabBarItem)
       }
       if (tabBar.items!.count > 0) {
@@ -182,7 +207,7 @@ class FyreKitViewController : UINavigationController {
     
     let scriptMessageHandler = ScriptMessageHandler(delegate: self)
     configuration.userContentController.add(scriptMessageHandler, name: "nativeApp")
-
+    
     let session = Session(webViewConfiguration: configuration)
     session.webView.allowsLinkPreview = false
     session.delegate = self
@@ -190,11 +215,11 @@ class FyreKitViewController : UINavigationController {
     return session
   }
   
-  func sendNotificationToken() {
+  public func sendNotificationToken() {
     if (FyreKit.pushTokenSaved) { return }
     
     let webView = self.session.webView
-    let script = "window.bridge.register(\"\(FyreKit.pushToken)\", 'ios');"
+    let script = "window.bridge.register(\"\(String(describing: FyreKit.pushToken))\", 'ios');"
     
     webView.evaluateJavaScript(script) { object, error in
       if error != nil {
@@ -206,7 +231,7 @@ class FyreKitViewController : UINavigationController {
       }
     }
   }
-
+  
   func isModal(_ properties: PathProperties) -> Bool {
     let presentation = properties["presentation"] as? String
     return presentation == "modal"
@@ -224,13 +249,16 @@ class FyreKitViewController : UINavigationController {
 }
 
 extension FyreKitViewController : SessionDelegate {
-  func session(_ session: Turbo.Session, didFailRequestForVisitable visitable: Turbo.Visitable, error: Error) {
+  public func session(_ session: Turbo.Session, didFailRequestForVisitable visitable: Turbo.Visitable, error: Error) {
     if let turboError = error as? TurboError, case let .http(statusCode) = turboError, statusCode == 401 {
       Log.i("Session Error: \(turboError) -- \(statusCode)")
-//      promptForAuthentication()
     } else if let errorPresenter = visitable as? ErrorPresenter {
       errorPresenter.presentError(error) { [weak self] in
-        self?.session.reload()
+        if (session == self?.modalSession) {
+          self?.modalSession.reload()
+        } else {
+          self?.session.reload()
+        }
       }
     } else {
       let alert = UIAlertController(title: "Visit failed!", message: error.localizedDescription, preferredStyle: .alert)
@@ -239,22 +267,31 @@ extension FyreKitViewController : SessionDelegate {
     }
   }
   
-  func session(_ session: Turbo.Session, didProposeVisit proposal: Turbo.VisitProposal) {
+  public func session(_ session: Turbo.Session, didProposeVisit proposal: Turbo.VisitProposal) {
     visit(url: proposal.url, options: proposal.options, properties: proposal.properties)
   }
   
-  func sessionWebViewProcessDidTerminate(_ session: Turbo.Session) {
+  public func sessionWebViewProcessDidTerminate(_ session: Turbo.Session) {
   }
-
-  func sessionDidStartRequest(_ session: Session) {
+  
+  public func sessionDidStartRequest(_ session: Session) {
   }
-
-  func sessionDidLoadWebView(_ session: Session) {
+  
+  // When a form submission completes in the modal session, we need to
+  // manually clear the snapshot cache in the default session, since we
+  // don't want potentially stale cached snapshots to be used
+  public func sessionDidFinishFormSubmission(_ session: Session) {
+    if (session == modalSession) {
+      self.session.clearSnapshotCache()
+    }
+  }
+  
+  public func sessionDidLoadWebView(_ session: Session) {
     session.webView.navigationDelegate = self
     session.webView.uiDelegate = self
   }
-
-  func sessionDidFinishRequest(_ session: Session) {
+  
+  public func sessionDidFinishRequest(_ session: Session) {
     let script = "document.querySelector(\"meta[name='turbo:authenticated']\").content"
     session.webView.evaluateJavaScript(script, completionHandler: { (html: Any?, error: Error?) in
       Log.i("Session did finish - \(String(describing: html))")
@@ -263,29 +300,107 @@ extension FyreKitViewController : SessionDelegate {
 }
 
 extension FyreKitViewController : UITabBarDelegate {
-  func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+  public func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
     let tabs = settings["tabs"] as? [Dictionary<String, AnyObject>]
     let tab = tabs![item.tag] as Dictionary<String, AnyObject>
     guard let path = tab["visit"] as? String else { return }
-
+    
     let url = FyreKit.fullUrl(path)
-    Log.i("URL \(url)")
     let properties = pathProperties(url.absoluteString)
+    Log.i("TAB URL \(url) -- \(properties)")
     visit(url: url, options: VisitOptions(action: .replace), properties: properties)
   }
 }
 
 extension FyreKitViewController : WKNavigationDelegate {
+  public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    if navigationAction.navigationType == .linkActivated {
+      // Any link that's not on the same domain as the Turbo root url will go through here
+      // Other links on the domain, but that have an extension that is non-html will also go here
+      // You can decide how to handle those, by default if you're not the navigationDelegate
+      // the Session will open them in the default browser
+      
+      let url = navigationAction.request.url!
+      
+      // For this demo, we'll load files from our domain in a SafariViewController so you
+      // don't need to leave the app. You might expand this in your app
+      // to open all audio/video/images in a native media viewer
+      if url.host == FyreKit.rootURL.host, !url.pathExtension.isEmpty {
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true)
+      } else {
+        UIApplication.shared.open(url)
+      }
+      
+      decisionHandler(.cancel)
+    } else {
+      decisionHandler(.allow)
+    }
+  }
 }
 
-
 extension FyreKitViewController : WKUIDelegate {
+//  public func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo,
+//                      completionHandler: @escaping () -> Void) {
+//
+//    let alertController = UIAlertController(title: FyreKit.appName, message: message, preferredStyle: .actionSheet)
+//    alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+//      completionHandler()
+//    }))
+//
+//    if (presentedViewController != nil) {
+//      Log.i("View is already presented")
+//      presentedViewController?.present(alertController, animated: true, completion: nil)
+//    } else {
+//      present(alertController, animated: true, completion: nil)
+//    }
+//  }
+//
+//  public func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
+//
+//    let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+//
+//    alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+//      completionHandler(true)
+//    }))
+//
+//    alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+//      completionHandler(false)
+//    }))
+//
+//    present(alertController, animated: true, completion: nil)
+//  }
+//
+//  public func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (String?) -> Void) {
+//
+//    let alertController = UIAlertController(title: nil, message: prompt, preferredStyle: .alert)
+//
+//    alertController.addTextField { (textField) in
+//      textField.text = defaultText
+//    }
+//
+//    alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+//      if let text = alertController.textFields?.first?.text {
+//        completionHandler(text)
+//      } else {
+//        completionHandler(defaultText)
+//      }
+//    }))
+//
+//    alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+//      completionHandler(nil)
+//    }))
+//
+//    present(alertController, animated: true, completion: nil)
+//  }
 }
 
 extension FyreKitViewController : ScriptMessageDelegate {
-  func addActionButton(_ button: TurboButton) {
-    Log.i("implement add action button")
-    
+  public func addMapLink(location: FyreKitLocation) {
+    MapLinkController.present(in: self, sourceView: view, location: location)
+  }
+  
+  public func addActionButton(_ button: TurboButton) {
     nextActionButton = button
     let actionButton = TurboUIBarButton(
       image: button.icon != nil ? UIImage(systemName: button.icon!) : nil, // 🤩
@@ -297,9 +412,10 @@ extension FyreKitViewController : ScriptMessageDelegate {
     visibleViewController?.navigationItem.rightBarButtonItem = actionButton
   }
   
-  func addMenuButton(_ menu: [[String : String]]) {
-    Log.i("implement add menu button")
+  public func addMenuButton(_ menu: [TurboButton]) {
     menuOptions = menu
+    if (menu.isEmpty) { return }
+    
     let actionButton = TurboUIBarButton(
       image: UIImage(systemName: "ellipsis"),// 🤩
       style: .plain,
@@ -310,8 +426,7 @@ extension FyreKitViewController : ScriptMessageDelegate {
     visibleViewController?.navigationItem.rightBarButtonItem = actionButton
   }
   
-  func addSegmentedPicker(buttons: [TurboButton]) {
-    Log.i("implement add action button")
+  public func addSegmentedPicker(buttons: [TurboButton]) {
     segmentedButtons = buttons
     let titles = buttons.map { $0.title! }
     let segmentedControl = UISegmentedControl(items: titles)
@@ -327,11 +442,12 @@ extension FyreKitViewController : ScriptMessageDelegate {
     visibleViewController?.navigationItem.titleView = segmentedControl
   }
   
-  func dismissModal() {
-    Log.i("implement add dismiss modal")
+  public func dismissModal(path: String) {
     if (presentedViewController != nil) {
       dismiss(animated: true)
-      session.reload()
+      let url = FyreKit.fullUrl(path)
+      let properties = pathProperties(url.absoluteString)
+      visit(url: url, options: VisitOptions(action: .replace), properties: properties)
     }
   }
   
@@ -343,96 +459,84 @@ extension FyreKitViewController : ScriptMessageDelegate {
     
     segmentedButtons = nil
   }
-
+  
   @objc private func visitActionButtonURL(sender: TurboUIBarButton) {
     if let button = nextActionButton {
       if button.isGet {
         let url = button.path!
         let properties = pathConfiguration.properties(for: url)
         
-        visit(url: URL(string: url)!, options: VisitOptions(action: .advance), properties: properties)
+        visit(url: URL(string: url)!, options: VisitOptions(action: .replace), properties: properties)
       } else {
         self.session.webView.evaluateJavaScript(button.script!) { _, _ in }
       }
     }
-//    nextActionButton = nil
+    //    nextActionButton = nil
   }
   
   @objc private func openMenu(sender: TurboUIBarButton) {
-    if let options = menuOptions {
-      let alert = UIAlertController(title: "User Options", message: "Please Select an Option", preferredStyle: .actionSheet)
+    if let buttons = menuOptions {
+      let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
       
-      for option in options {
-        let url = FyreKit.fullUrl(option["url"]!)
-        let alertAction = UIAlertAction(title: option["name"], style: .default) { (_) in
-          if (option["type"]! == "danger") {
+      for button in buttons {
+        let alertAction = UIAlertAction(title: button.title, style: .default) { (_) in
+          if (button.isDanger) {
             // Create new Alert modal
-            let newAlert = UIAlertController(title: "Testing", message: "Are you sure you want to delete?", preferredStyle: .alert)
-            
-            newAlert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: { (UIAlertAction)in
-              print("User click Dismiss button")
+            let newAlert = UIAlertController(title: button.alertTitle, message: button.alertMessage, preferredStyle: .alert)
+
+            newAlert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: { (UIAlertAction) in
+              Log.i("User click Dismiss button")
             }))
-            
+
             // Alert modal confirmation button
-            let confirmButton = UIAlertAction(title: option["name"]!, style: .default) { (_) in
-              self.visit(url: url, options: VisitOptions(action: .advance), properties: [:])
+            let confirmButton = UIAlertAction(title: button.title, style: .default) { (_) in
+              Log.i("Confirm clicked -- script? \(button.isScript) --- \(String(describing: button.script))")
+              if (button.isScript) {
+                self.session.webView.evaluateJavaScript(button.script!) { _, _ in }
+              } else {
+                self.visit(url: FyreKit.fullUrl(button.path!), options: VisitOptions(action: .replace), properties: [:])
+              }
             }
-//            confirmButton.titleTextColor = UIColor.red
+            //            confirmButton.titleTextColor = UIColor.red
             newAlert.addAction(confirmButton)
-            
+
             // Present new alert modal
             self.present(newAlert, animated: true, completion: {
-              print("completion block")
+              Log.i("completion block")
             })
           }
           
-          let action: VisitAction = (option["method"] ?? "" == "replace") ? .replace : .advance
-          let properties = self.pathConfiguration.properties(for: url)
-          self.visit(url: url, options: VisitOptions(action: action), properties: properties)
+          if (!button.isDanger) {
+            if (button.isScript) {
+              self.session.webView.evaluateJavaScript(button.script!) { _, _ in }
+            } else {
+              let properties = self.pathConfiguration.properties(for: button.path!)
+              self.visit(url: FyreKit.fullUrl(button.path!), options: VisitOptions(action: .replace), properties: properties)
+            }
+          }
         }
         
-        if (option["type"]! == "danger") {
+        if (button.isDanger) {
           alertAction.titleTextColor = UIColor.red
         }
         
         alert.addAction(alertAction)
       }
       
-      alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler:{ (UIAlertAction)in
-        print("User click Dismiss button")
+      alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler:{ (UIAlertAction) in
+        Log.i("User click Dismiss button")
       }))
       
       //uncomment for iPad Support
       //alert.popoverPresentationController?.sourceView = self.view
       
       present(alert, animated: true, completion: {
-        print("completion block")
+        Log.i("completion block")
       })
     }
   }
 }
 
-//extension UIBarButtonItem {
-//  private struct AssociatedObject {
-//    static var key = "action_closure_key"
-//  }
-//
-//  var actionClosure: (()->Void)? {
-//    get {
-//      return objc_getAssociatedObject(self, &AssociatedObject.key) as? ()->Void
-//    }
-//    set {
-//      objc_setAssociatedObject(self, &AssociatedObject.key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-//      target = self
-//      action = #selector(didTapButton(sender:))
-//    }
-//  }
-//
-//  @objc func didTapButton(sender: Any) {
-//    actionClosure?()
-//  }
-//}
-// save
 extension UIImage {
   func save(at directory: FileManager.SearchPathDirectory,
             pathAndImageName: String,
@@ -450,15 +554,15 @@ extension UIImage {
       return nil
     }
   }
-
+  
   func save(at url: URL,
             createSubdirectoriesIfNeed: Bool = true,
             compressionQuality: CGFloat = 1.0)  -> URL? {
     do {
       if createSubdirectoriesIfNeed {
-          try FileManager.default.createDirectory(at: url.deletingLastPathComponent(),
-                                                  withIntermediateDirectories: true,
-                                                  attributes: nil)
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(),
+                                                withIntermediateDirectories: true,
+                                                attributes: nil)
       }
       guard let data = jpegData(compressionQuality: compressionQuality) else { return nil }
       try data.write(to: url)

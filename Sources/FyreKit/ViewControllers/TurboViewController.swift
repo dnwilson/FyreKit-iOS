@@ -18,10 +18,13 @@ final class TurboViewController: VisitableViewController, ErrorPresenter {
     }
     
     view.backgroundColor = .systemBackground
-
     if presentingViewController != nil {
-      navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissModal))
+      navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissModal))
     }
+  }
+  
+  func addMenu() {
+    navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissModal))
   }
 
 

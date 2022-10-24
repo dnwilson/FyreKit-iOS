@@ -21,7 +21,6 @@ open class FyreKitAppDelegate: UIResponder, UIApplicationDelegate, MessagingDele
       guard success else { return }
 
       FyreKit.setPref(true, key: FyreKit.Keys.Plist.sendPushToken)
-      print("Permission granted: \(success)")
     }
     
     application.registerForRemoteNotifications()

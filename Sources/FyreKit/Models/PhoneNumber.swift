@@ -8,8 +8,8 @@
 import SwiftUI
 
 public struct PhoneNumber: Codable {
-  var phoneNumber: String = ""
-  var id: String?
-  var code: String?
-  var status: String?
+  public var phoneNumber: String = ""
+  public var id: String?
+  public var code: String?
+  public var status: String?
 }

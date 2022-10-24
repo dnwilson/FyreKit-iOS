@@ -11,15 +11,22 @@ public struct TurboButton {
   var title: String?
   var icon: String?
   var path: String?
+  var type: String?
   var script: String?
+  var alertMessage: String?
+  var alertTitle: String?
+  var isDanger: Bool { type == "danger" }
   var isGet: Bool { path != nil }
-  var isScript: Bool { !isGet }
+  var isScript: Bool { !isGet || ((script?.isPresent) != nil) }
 
-  public init(_ message: [String: Any]) {
-    self.title = message["title"] as? String
-    self.icon = message["icon"] as? String
-    self.path = message["path"] as? String
-    self.script = message["script"] as? String
+  public init(_ params: [String: Any]) {
+    self.title = params["title"] as? String
+    self.icon = params["icon"] as? String
+    self.path = params["path"] as? String
+    self.script = params["script"] as? String
+    self.alertMessage = params["alertMessage"] as? String
+    self.alertTitle = params["alertTitle"] as? String
+    self.type = params["type"] as? String ?? "default"
   }
   
   public static func buildButtons(_ buttons: [[String: Any]]) -> [TurboButton] {

@@ -2,17 +2,9 @@ import KeychainAccess
 import SwiftUI
 import Turbo
 
-//public protocol Configuratable {
-//  public static let rootUrl : String
-//}
-
 @available(iOS 15, *)
-public class FyreKit {
+public struct FyreKit {
   public static var registerable: Registerable = FyreKitRegistration()
-  public static func buildRegistrationViewModel(login: String) -> FyreKitRegistrationViewModel {
-    return FyreKitRegistrationViewModel(number: login)
-  }
-  public static var termsMessage: String = ""
   
   // MARK: - Keys
   enum Keys {
@@ -85,7 +77,7 @@ public class FyreKit {
         return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
       }
       catch {
-        print(error.localizedDescription)
+        Log.i(error.localizedDescription)
       }
     }
     return nil
@@ -96,7 +88,12 @@ public class FyreKit {
   }()
   
   public static func toggleDemoMode() {
+    Log.i("BEFORE change DEMO? \(preferences.bool(forKey: "DemoMode"))")
+    Log.i("PREVIOUS MODE is DEMO? \(isDemoMode)")
     preferences.set(!preferences.bool(forKey: "DemoMode"), forKey: "DemoMode")
+    Log.i("AFTER change DEMO? \(preferences.bool(forKey: "DemoMode"))")
+    Log.i("IS_DEMO MODE \(isDemoMode)")
+    Log.i("ROOT URL is \(rootURL)")
   }
 
   public static var appName : String { infoDictionary[Keys.Plist.appName] as? String ?? "FyreKit" }
@@ -106,9 +103,7 @@ public class FyreKit {
   public static var hasAuthToken : Bool { authToken?.isPresent ?? false }
   public static var authToken : String? { keychain["access-token"] }
   public static var pushToken : String? { keychain["push-token"] }
-  public static var loginHeaderMessage : String {
-    Log.i("LOGIN_HEADER_MESSAGE --- \(infoDictionary)")
-    return infoDictionary["LOGIN_HEADER_MESSAGE"] as? String ?? "FyreKit" }
+  public static var loginHeaderMessage : String { infoDictionary["LOGIN_HEADER_MESSAGE"] as? String ?? "FyreKit" }
   
   // MARK: - Plist
   private static let infoDictionary: [String: Any] = {

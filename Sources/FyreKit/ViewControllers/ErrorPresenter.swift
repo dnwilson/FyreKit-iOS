@@ -2,7 +2,7 @@ import UIKit
 
 protocol ErrorPresenter: UIViewController {
   typealias Handler = () -> Void
-
+  
   func presentError(_ error: Error, handler: @escaping Handler)
 }
 
@@ -27,7 +27,7 @@ extension ErrorPresenter {
     ])
     errorViewController.didMove(toParent: self)
   }
-    
+  
   private func removeErrorViewController(_ errorViewController: UIViewController) {
     errorViewController.willMove(toParent: nil)
     errorViewController.view.removeFromSuperview()
@@ -37,12 +37,12 @@ extension ErrorPresenter {
 
 final class ErrorViewController: UIViewController {
   var handler: ErrorPresenter.Handler?
-    
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     setup()
   }
-    
+  
   private func setup() {
     view.backgroundColor = .systemBackground
     
@@ -60,7 +60,7 @@ final class ErrorViewController: UIViewController {
       vStack.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -32),
     ])
   }
-    
+  
   func configure(with error: Error, handler: @escaping ErrorPresenter.Handler) {
     titleLabel.text = "Error loading page"
     bodyLabel.text = error.localizedDescription
@@ -70,7 +70,7 @@ final class ErrorViewController: UIViewController {
   @objc func performAction(_ sender: UIButton) {
     handler?()
   }
-    
+  
   // MARK: - Views
   
   private let imageView: UIImageView = {
@@ -81,32 +81,32 @@ final class ErrorViewController: UIViewController {
     
     return imageView
   }()
-    
+  
   private let titleLabel: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.font = UIFont.preferredFont(forTextStyle: .largeTitle)
     label.textAlignment = .center
-
+    
     return label
   }()
-    
+  
   private let bodyLabel: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.font = UIFont.preferredFont(forTextStyle: .body)
     label.textAlignment = .center
     label.numberOfLines = 0
-
+    
     return label
   }()
-    
+  
   private let button: UIButton = {
     let button = UIButton(type: .system)
     button.setTitle("Retry", for: .normal)
-    button.addTarget(ErrorViewController.self, action: #selector(performAction(_:)), for: .touchUpInside)
+    button.addTarget(self, action: #selector(performAction(_:)), for: .touchUpInside)
     button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
-      
+    
     return button
   }()
 }

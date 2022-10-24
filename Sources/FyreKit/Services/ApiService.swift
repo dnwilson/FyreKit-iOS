@@ -123,7 +123,7 @@ public class ApiService {
     task.resume()
   }
 
-  public static func login(credentials: Credentials, completion: @escaping (Result<Bool, Error>) -> Void) {
+  public static func login(credentials: Authenticatable, completion: @escaping (Result<Bool, Error>) -> Void) {
     var request = request(url: FyreKit.fullUrl("api/login"), type: "POST")
 
     let encoder = JSONEncoder()
@@ -167,7 +167,7 @@ public class ApiService {
     task.resume()
   }
 
-  public static func register(registration: FyreKitRegistration, completion: @escaping (Result<Bool, Error>) -> Void) {
+  public static func register(registration: Registerable, completion: @escaping (Result<Bool, Error>) -> Void) {
     var request = request(url: FyreKit.fullUrl("api/register"), type: "POST")
 
     let encoder = JSONEncoder()
