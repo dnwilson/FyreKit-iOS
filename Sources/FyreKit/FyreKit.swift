@@ -88,12 +88,7 @@ public struct FyreKit {
   }()
   
   public static func toggleDemoMode() {
-    Log.i("BEFORE change DEMO? \(preferences.bool(forKey: "DemoMode"))")
-    Log.i("PREVIOUS MODE is DEMO? \(isDemoMode)")
     preferences.set(!preferences.bool(forKey: "DemoMode"), forKey: "DemoMode")
-    Log.i("AFTER change DEMO? \(preferences.bool(forKey: "DemoMode"))")
-    Log.i("IS_DEMO MODE \(isDemoMode)")
-    Log.i("ROOT URL is \(rootURL)")
   }
 
   public static var appName : String { infoDictionary[Keys.Plist.appName] as? String ?? "FyreKit" }
