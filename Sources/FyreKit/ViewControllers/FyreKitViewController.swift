@@ -216,6 +216,7 @@ public class FyreKitViewController : UINavigationController {
   }
   
   public func sendNotificationToken() {
+    Log.i("FyreKitViewController: FyreKit.pushTokenSaved \(FyreKit.pushTokenSaved)")
     if (FyreKit.pushTokenSaved) { return }
     
     let webView = self.session.webView
@@ -224,10 +225,12 @@ public class FyreKitViewController : UINavigationController {
     webView.evaluateJavaScript(script) { object, error in
       if error != nil {
         // handle error
+        Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved")
         FyreKit.setKeychainValue(false, key: "PushTokenSaved")
       } else if object != nil {
         // success
         FyreKit.setKeychainValue(true, key: "PushTokenSaved")
+        Log.i("FyreKitViewController: FyreKit pushTokenSaved saved")
       }
     }
   }
