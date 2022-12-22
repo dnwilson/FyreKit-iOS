@@ -219,12 +219,17 @@ public class FyreKitViewController : UINavigationController {
     Log.i("FyreKitViewController: FyreKit.pushTokenSaved \(FyreKit.pushTokenSaved)")
     if (FyreKit.pushTokenSaved) { return }
     
+    Log.i("FyreKitViewController: pushToken is \(String(describing: FyreKit.pushToken))")
+    
     let webView = self.session.webView
     let script = "window.bridge.register(\"\(String(describing: FyreKit.pushToken))\", 'ios');"
+    
+    Log.i("FyreKitViewController: script is \(script)")
     
     webView.evaluateJavaScript(script) { object, error in
       if error != nil {
         // handle error
+        Log.i("FyreKitViewController: Error --- \(error) -- object -- \(object)")
         Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved")
         FyreKit.setKeychainValue(false, key: "PushTokenSaved")
       } else if object != nil {
