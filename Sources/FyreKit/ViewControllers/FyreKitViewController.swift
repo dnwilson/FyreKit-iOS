@@ -224,6 +224,15 @@ public class FyreKitViewController : UINavigationController {
     let webView = self.session.webView
     let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios');"
     
+    Log.i("FyreKitViewController: saying hello")
+    webView.evaluateJavaScript("window.bridge.sayHello();") { object, error in
+      if error != nil {
+        Log.i("FyreKitViewController: FyreKit saying hello \(String(describing: error))")
+      } else if object != nil {
+        Log.i("FyreKitViewController: FyreKit said hello")
+      }
+    }
+    
     Log.i("FyreKitViewController: script is \(script)")
     
     webView.evaluateJavaScript(script) { object, error in
