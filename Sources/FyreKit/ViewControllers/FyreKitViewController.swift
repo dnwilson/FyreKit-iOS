@@ -38,8 +38,6 @@ public class FyreKitViewController : UINavigationController {
     loadTabs()
     loadHome()
     
-    sendNotificationToken()
-    
     self.title = FyreKit.appName
     
     visit(url: FyreKit.rootURL, options: VisitOptions(action: .replace),
@@ -306,6 +304,8 @@ extension FyreKitViewController : SessionDelegate {
     session.webView.evaluateJavaScript(script, completionHandler: { (html: Any?, error: Error?) in
       Log.i("Session did finish - \(String(describing: html))")
     })
+    
+    sendNotificationToken()
   }
 }
 
