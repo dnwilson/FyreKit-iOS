@@ -38,6 +38,8 @@ public class FyreKitViewController : UINavigationController {
     loadTabs()
     loadHome()
     
+    sendNotificationToken()
+    
     self.title = FyreKit.appName
     
     visit(url: FyreKit.rootURL, options: VisitOptions(action: .replace),
