@@ -222,7 +222,7 @@ public class FyreKitViewController : UINavigationController {
     Log.i("FyreKitViewController: pushToken is \(String(describing: FyreKit.pushToken))")
     
     let webView = self.session.webView
-    let script = "window.bridge.register(\"\(String(describing: FyreKit.pushToken))\", 'ios');"
+    let script = "window.bridge.register('\(String(describing: FyreKit.pushToken))', 'ios');"
     
     Log.i("FyreKitViewController: script is \(script)")
     
