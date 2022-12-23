@@ -248,6 +248,8 @@ public class FyreKitViewController : UINavigationController {
 //      }
     }
     
+    webView.callAsyncJavaScript("window.bridge.sayHello();", in: nil, in: .defaultClient) { _ in }
+    
     webView.evaluateJavaScript("console.log('It is not working...')") { _, _ in }
     self.session.webView.evaluateJavaScript("window.bridge.sayHello();") { _, _ in }
     let script = "alert(\"Hello World!\");"
