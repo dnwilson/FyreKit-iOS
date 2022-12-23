@@ -231,44 +231,19 @@ public class FyreKitViewController : UINavigationController {
     Log.i("FyreKitViewController: FyreKit.pushTokenSaved \(FyreKit.pushTokenSaved)")
     if (FyreKit.pushTokenSaved) { return }
     
-    Log.i("FyreKitViewController: pushToken is \(String(describing: FyreKit.pushToken))")
-    
-    Log.i("FyreKitViewController: session is \(self.session.webView)")
-    
     let webView = self.session.webView
-//    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
+    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
     
-    Log.i("FyreKitViewController: saying hello")
-    webView.evaluateJavaScript("document.querySelector('h1.header-title')") { object, error in
-      Log.i("FyreKitViewController: FyreKit said hello...")
-//      if error != nil {
-//        Log.i("FyreKitViewController: FyreKit saying hello \(String(describing: error))")
-//      } else if object != nil {
-//        Log.i("FyreKitViewController: FyreKit said hello")
-//      }
+    webView.callAsyncJavaScript(script, in: nil, in: .defaultClient) { result in
+      switch result {
+      case let .failure(error):
+        Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved -- error \(error)")
+        FyreKit.setKeychainValue(false, key: "PushTokenSaved")
+      case let .success(result):
+        Log.i("FyreKitViewController: FyreKit pushTokenSaved saved -- result \(result)")
+        FyreKit.setKeychainValue(true, key: "PushTokenSaved")
+      }
     }
-    
-    webView.callAsyncJavaScript("window.bridge.sayHello();", in: nil, in: .defaultClient) { _ in }
-    
-    webView.evaluateJavaScript("console.log('It is not working...')") { _, _ in }
-    self.session.webView.evaluateJavaScript("window.bridge.sayHello();") { _, _ in }
-    let script = "alert(\"Hello World!\");"
-    self.session.webView.evaluateJavaScript(script) { _, _ in }
-    
-//    Log.i("FyreKitViewController: script is \(script)")
-//
-//    webView.evaluateJavaScript(script) { object, error in
-//      if error != nil {
-//        // handle error
-//        Log.i("FyreKitViewController: Error --- \(String(describing: error))")
-//        Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved")
-//        FyreKit.setKeychainValue(false, key: "PushTokenSaved")
-//      } else if object != nil {
-//        // success
-//        FyreKit.setKeychainValue(true, key: "PushTokenSaved")
-//        Log.i("FyreKitViewController: FyreKit pushTokenSaved saved")
-//      }
-//    }
   }
   
   func isModal(_ properties: PathProperties) -> Bool {
