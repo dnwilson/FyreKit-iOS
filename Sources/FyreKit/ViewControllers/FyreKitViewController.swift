@@ -224,10 +224,10 @@ public class FyreKitViewController : UINavigationController {
     Log.i("FyreKitViewController: session is \(self.session.webView)")
     
     let webView = self.session.webView
-    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
+//    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
     
     Log.i("FyreKitViewController: saying hello")
-    webView.evaluateJavaScript("window.bridge.sayHello()") { object, error in
+    webView.evaluateJavaScript("document.body") { object, error in
       if error != nil {
         Log.i("FyreKitViewController: FyreKit saying hello \(String(describing: error))")
       } else if object != nil {
@@ -235,20 +235,20 @@ public class FyreKitViewController : UINavigationController {
       }
     }
     
-    Log.i("FyreKitViewController: script is \(script)")
-    
-    webView.evaluateJavaScript(script) { object, error in
-      if error != nil {
-        // handle error
-        Log.i("FyreKitViewController: Error --- \(String(describing: error))")
-        Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved")
-        FyreKit.setKeychainValue(false, key: "PushTokenSaved")
-      } else if object != nil {
-        // success
-        FyreKit.setKeychainValue(true, key: "PushTokenSaved")
-        Log.i("FyreKitViewController: FyreKit pushTokenSaved saved")
-      }
-    }
+//    Log.i("FyreKitViewController: script is \(script)")
+//
+//    webView.evaluateJavaScript(script) { object, error in
+//      if error != nil {
+//        // handle error
+//        Log.i("FyreKitViewController: Error --- \(String(describing: error))")
+//        Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved")
+//        FyreKit.setKeychainValue(false, key: "PushTokenSaved")
+//      } else if object != nil {
+//        // success
+//        FyreKit.setKeychainValue(true, key: "PushTokenSaved")
+//        Log.i("FyreKitViewController: FyreKit pushTokenSaved saved")
+//      }
+//    }
   }
   
   func isModal(_ properties: PathProperties) -> Bool {
