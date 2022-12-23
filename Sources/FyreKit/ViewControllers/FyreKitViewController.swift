@@ -212,15 +212,15 @@ public class FyreKitViewController : UINavigationController {
     let session = Session(webViewConfiguration: configuration)
     session.webView.allowsLinkPreview = false
     
-    if #available(iOS 14, *) {
-      let preferences = WKWebpagePreferences()
-      preferences.allowsContentJavaScript = true
-      session.webView.configuration.defaultWebpagePreferences = preferences
-    }
-    else {
-      session.webView.configuration.preferences.javaScriptEnabled = true
-      session.webView.configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
-    }
+//    if #available(iOS 14, *) {
+//      let preferences = WKWebpagePreferences()
+//      preferences.allowsContentJavaScript = true
+//      session.webView.configuration.defaultWebpagePreferences = preferences
+//    }
+//    else {
+//      session.webView.configuration.preferences.javaScriptEnabled = true
+//      session.webView.configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
+//    }
     
     session.delegate = self
     session.pathConfiguration = pathConfiguration
