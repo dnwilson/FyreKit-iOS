@@ -227,7 +227,7 @@ public class FyreKitViewController : UINavigationController {
 //    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
     
     Log.i("FyreKitViewController: saying hello")
-    webView.evaluateJavaScript("document.body") { object, error in
+    webView.evaluateJavaScript("document.body.style.background = 'orange';") { object, error in
       Log.i("FyreKitViewController: FyreKit said hello...")
 //      if error != nil {
 //        Log.i("FyreKitViewController: FyreKit saying hello \(String(describing: error))")
