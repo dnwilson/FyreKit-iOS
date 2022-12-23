@@ -228,11 +228,12 @@ public class FyreKitViewController : UINavigationController {
     
     Log.i("FyreKitViewController: saying hello")
     webView.evaluateJavaScript("document.body") { object, error in
-      if error != nil {
-        Log.i("FyreKitViewController: FyreKit saying hello \(String(describing: error))")
-      } else if object != nil {
-        Log.i("FyreKitViewController: FyreKit said hello")
-      }
+      Log.i("FyreKitViewController: FyreKit said hello...")
+//      if error != nil {
+//        Log.i("FyreKitViewController: FyreKit saying hello \(String(describing: error))")
+//      } else if object != nil {
+//        Log.i("FyreKitViewController: FyreKit said hello")
+//      }
     }
     
 //    Log.i("FyreKitViewController: script is \(script)")
