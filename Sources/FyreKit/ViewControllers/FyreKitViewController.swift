@@ -207,10 +207,21 @@ public class FyreKitViewController : UINavigationController {
     
     let scriptMessageHandler = ScriptMessageHandler(delegate: self)
     configuration.userContentController.add(scriptMessageHandler, name: "nativeApp")
-    configuration
+
     
     let session = Session(webViewConfiguration: configuration)
     session.webView.allowsLinkPreview = false
+    
+    if #available(iOS 14, *) {
+      let preferences = WKWebpagePreferences()
+      preferences.allowsContentJavaScript = true
+      session.webView.configuration.defaultWebpagePreferences = preferences
+    }
+    else {
+      session.webView.configuration.preferences.javaScriptEnabled = true
+      session.webView.configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
+    }
+    
     session.delegate = self
     session.pathConfiguration = pathConfiguration
     return session
