@@ -249,9 +249,9 @@ public class FyreKitViewController : UINavigationController {
     }
     
     webView.evaluateJavaScript("console.log('It is not working...')") { _, _ in }
-    webView.evaluateJavaScript("bridge.sayHello()") { _, _ in }
-    let script = "alert('Hello World!');"
-    webView.evaluateJavaScript(script) { _, _ in }
+    self.session.webView.evaluateJavaScript("window.bridge.sayHello();") { _, _ in }
+    let script = "alert(\"Hello World!\");"
+    self.session.webView.evaluateJavaScript(script) { _, _ in }
     
 //    Log.i("FyreKitViewController: script is \(script)")
 //
