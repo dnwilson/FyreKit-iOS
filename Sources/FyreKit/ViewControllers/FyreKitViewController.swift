@@ -208,7 +208,6 @@ public class FyreKitViewController : UINavigationController {
     let scriptMessageHandler = ScriptMessageHandler(delegate: self)
     configuration.userContentController.add(scriptMessageHandler, name: "nativeApp")
 
-    
     let session = Session(webViewConfiguration: configuration)
     session.webView.allowsLinkPreview = false
     
@@ -233,6 +232,10 @@ public class FyreKitViewController : UINavigationController {
     
     let webView = self.session.webView
     let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
+    
+    webView.callAsyncJavaScript("window.bridge.sayHello();", in: nil, in: .defaultClient) { result in
+      Log.i("FyreKitViewController: FyreKit said hello \(result)")
+    }
     
     webView.callAsyncJavaScript(script, in: nil, in: .defaultClient) { result in
       switch result {
