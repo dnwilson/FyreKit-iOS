@@ -235,6 +235,9 @@ public class FyreKitViewController : UINavigationController {
 //        Log.i("FyreKitViewController: FyreKit said hello")
 //      }
     }
+
+    let script = "window.bridge.sayHello();"
+    webView.evaluateJavaScript(script) { _, _ in }
     
 //    Log.i("FyreKitViewController: script is \(script)")
 //
