@@ -236,7 +236,7 @@ public class FyreKitViewController : UINavigationController {
     Log.i("FyreKitViewController: session is \(self.session.webView)")
     
     let webView = self.session.webView
-//    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
+    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
     
     Log.i("FyreKitViewController: saying hello")
     self.session.webView.callAsyncJavaScript(
@@ -245,9 +245,15 @@ public class FyreKitViewController : UINavigationController {
       Log.i("FyreKitViewController: FyreKit said hello... \(result)")
     }
     
+    webView.evaluateJavaScript(script) { _, _ in
+      Log.i("FyreKitViewController: script executed...")
+    }
     webView.evaluateJavaScript("console.log('Hello World!');") { _, _ in }
     webView.callAsyncJavaScript("window.bridge.sayHello();", in: nil, in: .defaultClient) { _ in }
     webView.callAsyncJavaScript("console.log('It is not working...')", in: nil, in: .defaultClient) { _ in }
+    webView.callAsyncJavaScript("console.log('It is not working...')", in: nil, in: .defaultClient) { result in
+      Log.i("FyreKitViewController: FyreKit script executed for result... \(result)")
+    }
     
 //    Log.i("FyreKitViewController: script is \(script)")
 //
