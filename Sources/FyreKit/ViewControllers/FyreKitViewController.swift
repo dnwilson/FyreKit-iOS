@@ -245,6 +245,7 @@ public class FyreKitViewController : UINavigationController {
       Log.i("FyreKitViewController: FyreKit said hello... \(result)")
     }
     
+    webView.evaluateJavaScript("console.log('Hello World!');") { _, _ in }
     webView.callAsyncJavaScript("window.bridge.sayHello();", in: nil, in: .defaultClient) { _ in }
     webView.callAsyncJavaScript("console.log('It is not working...')", in: nil, in: .defaultClient) { _ in }
     
