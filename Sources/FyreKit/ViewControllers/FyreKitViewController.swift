@@ -239,21 +239,14 @@ public class FyreKitViewController : UINavigationController {
 //    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
     
     Log.i("FyreKitViewController: saying hello")
-    webView.callAsyncJavaScript("document.querySelector('h1.header-title')", in: nil, in: .defaultClient) { result in
+    self.session.webView.callAsyncJavaScript(
+      "document.querySelector('h1.header-title')", in: nil, in: .defaultClient
+    ) { result in
       Log.i("FyreKitViewController: FyreKit said hello... \(result)")
-//      if error != nil {
-//        Log.i("FyreKitViewController: FyreKit saying hello \(String(describing: error))")
-//      } else if object != nil {
-//        Log.i("FyreKitViewController: FyreKit said hello")
-//      }
     }
     
-    webView.callAsyncJavaScript("window.bridge.sayHello();", in: nil, in: .defaultClient)
-    
-    webView.evaluateJavaScript("console.log('It is not working...')") { _, _ in }
-    self.session.webView.evaluateJavaScript("window.bridge.sayHello();") { _, _ in }
-    let script = "alert(\"Hello World!\");"
-    self.session.webView.evaluateJavaScript(script) { _, _ in }
+    webView.callAsyncJavaScript("window.bridge.sayHello();", in: nil, in: .defaultClient) { _ in }
+    webView.callAsyncJavaScript("console.log('It is not working...')", in: nil, in: .defaultClient) { _ in }
     
 //    Log.i("FyreKitViewController: script is \(script)")
 //
