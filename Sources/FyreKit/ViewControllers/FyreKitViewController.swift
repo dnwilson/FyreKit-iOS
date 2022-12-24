@@ -239,6 +239,8 @@ public class FyreKitViewController : UINavigationController {
     let script = "window.bridge.register('\(FyreKit.pushToken)', 'ios')"
 
     webView.evaluateJavaScript(script) { object, error in
+      Log.i("FyreKitViewController: Error --- \(String(describing: error)) --- Object ---\(String(describing: object))")
+      
       if error != nil {
         // handle error
         Log.i("FyreKitViewController: Error --- \(String(describing: error))")
