@@ -236,7 +236,7 @@ public class FyreKitViewController : UINavigationController {
     Log.i("FyreKitViewController: session is \(self.session.webView)")
     
     let webView = self.session.webView
-    let script = "window.bridge.register('\(FyreKit.pushToken)', 'ios')"
+    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
 
     webView.evaluateJavaScript(script) { object, error in
       Log.i("FyreKitViewController: Error --- \(String(describing: error)) --- Object ---\(String(describing: object))")
