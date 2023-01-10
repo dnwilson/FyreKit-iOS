@@ -236,20 +236,23 @@ public class FyreKitViewController : UINavigationController {
     Log.i("FyreKitViewController: session is \(self.session.webView)")
     
     let webView = self.session.webView
-    let script = "window.bridge.register('\(FyreKit.pushToken!)', 'ios')"
 
-    webView.evaluateJavaScript(script) { object, error in
-      Log.i("FyreKitViewController: Error --- \(String(describing: error)) --- Object ---\(String(describing: object))")
-      
-      if error != nil {
-        // handle error
-        Log.i("FyreKitViewController: Error --- \(String(describing: error))")
-        Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved")
-        FyreKit.setKeychainValue(false, key: "PushTokenSaved")
-      } else if object != nil {
-        // success
-        FyreKit.setKeychainValue(true, key: "PushTokenSaved")
-        Log.i("FyreKitViewController: FyreKit pushTokenSaved saved")
+    if let token = FyreKit.pushToken {
+      let script = "window.bridge.register('\(token)', 'ios')"
+
+      webView.evaluateJavaScript(script) { object, error in
+        Log.i("FyreKitViewController: Error --- \(String(describing: error)) --- Object ---\(String(describing: object))")
+        
+        if error != nil {
+          // handle error
+          Log.i("FyreKitViewController: Error --- \(String(describing: error))")
+          Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved")
+          FyreKit.setKeychainValue(false, key: "PushTokenSaved")
+        } else if object != nil {
+          // success
+          FyreKit.setKeychainValue(true, key: "PushTokenSaved")
+          Log.i("FyreKitViewController: FyreKit pushTokenSaved saved")
+        }
       }
     }
   }
