@@ -24,18 +24,15 @@ public class FyreKitViewController : UINavigationController {
   private var menuOptions: [TurboButton]?
   
   var notificationCenter = NotificationCenter.default
-  
-  private var url: URL
-  
-  public init?(url: URL) {
-      self.url = url
-      super.init(nibName: nil, bundle: nil)
+  private var url = FyreKit.rootURL
+
+  public static func visitUrl(url: URL) -> FyreKitViewController {
+    let viewController = FyreKitViewController()
+    viewController.url = url
+    
+    return viewController
   }
 
-  required convenience init?(coder: NSCoder) {
-      self.init(url: FyreKit.rootURL)
-  }
-  
   private lazy var pathConfiguration = PathConfiguration(sources: [
     .file(Bundle.main.url(forResource: "TurboConfig", withExtension: "json")!),
     .server(FyreKit.fullUrl("turbo.json"))
