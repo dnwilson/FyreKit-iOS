@@ -62,6 +62,9 @@ public class FyreKitViewController : UINavigationController {
     if isModal(properties) {
       let modalNavController = UINavigationController(rootViewController: viewController)
       Log.i("Url is \(url)")
+      if (url.absoluteString.contains("orders/new")) {
+        modalNavController.isModalInPresentation = true
+      }
       present(modalNavController, animated: true)
     } else if isReplace(properties) {
       let viewControllers = Array(viewControllers.dropLast()) + [viewController]
