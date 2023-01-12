@@ -27,7 +27,7 @@ public class FyreKitViewController : UINavigationController {
   
   private var url: URL
   
-  public init(url: URL) {
+  public init?(url: URL) {
       self.url = url
       super.init(nibName: nil, bundle: nil)
   }
