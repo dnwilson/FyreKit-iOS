@@ -60,11 +60,10 @@ public class FyreKitViewController : UINavigationController {
     viewController.title = self.title
     // We support three types of navigation in the app: advance, replace, and modal
     if isModal(properties) {
-      Log.i("Modal controller")
       let modalNavController = UINavigationController(rootViewController: viewController)
+      Log.i("Url is \(url)")
       present(modalNavController, animated: true)
     } else if isReplace(properties) {
-      Log.i("isReplace")
       let viewControllers = Array(viewControllers.dropLast()) + [viewController]
       setViewControllers(viewControllers, animated: false)
       completeVisit(viewController: viewController as! VisitableViewController, options: options, properties: properties)
@@ -228,12 +227,7 @@ public class FyreKitViewController : UINavigationController {
   }
   
   public func sendNotificationToken() {
-    Log.i("FyreKitViewController: FyreKit.pushTokenSaved \(FyreKit.pushTokenSaved)")
     if (FyreKit.pushTokenSaved) { return }
-    
-    Log.i("FyreKitViewController: pushToken is \(String(describing: FyreKit.pushToken))")
-    
-    Log.i("FyreKitViewController: session is \(self.session.webView)")
     
     let webView = self.session.webView
 
@@ -241,17 +235,12 @@ public class FyreKitViewController : UINavigationController {
       let script = "window.bridge.register('\(token)', 'ios')"
 
       webView.evaluateJavaScript(script) { object, error in
-        Log.i("FyreKitViewController: Error --- \(String(describing: error)) --- Object ---\(String(describing: object))")
-        
         if error != nil {
           // handle error
-          Log.i("FyreKitViewController: Error --- \(String(describing: error))")
-          Log.i("FyreKitViewController: FyreKit pushTokenSaved not saved")
           FyreKit.setKeychainValue(false, key: "PushTokenSaved")
         } else if object != nil {
           // success
           FyreKit.setKeychainValue(true, key: "PushTokenSaved")
-          Log.i("FyreKitViewController: FyreKit pushTokenSaved saved")
         }
       }
     }
