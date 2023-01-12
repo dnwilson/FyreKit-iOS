@@ -25,6 +25,17 @@ public class FyreKitViewController : UINavigationController {
   
   var notificationCenter = NotificationCenter.default
   
+  private var url: URL
+  
+  init(url: URL) {
+      self.url = url
+      super.init(nibName: nil, bundle: nil)
+  }
+
+  required convenience init?(coder: NSCoder) {
+      self.init(url: FyreKit.rootURL)
+  }
+  
   private lazy var pathConfiguration = PathConfiguration(sources: [
     .file(Bundle.main.url(forResource: "TurboConfig", withExtension: "json")!),
     .server(FyreKit.fullUrl("turbo.json"))
@@ -40,7 +51,7 @@ public class FyreKitViewController : UINavigationController {
     
     self.title = FyreKit.appName
     
-    visit(url: FyreKit.rootURL, options: VisitOptions(action: .replace),
+    visit(url: url, options: VisitOptions(action: .replace),
           properties: pathConfiguration.properties(for: FyreKit.rootURL))
   }
   
@@ -61,7 +72,7 @@ public class FyreKitViewController : UINavigationController {
     // We support three types of navigation in the app: advance, replace, and modal
     if isModal(properties) {
       let modalNavController = UINavigationController(rootViewController: viewController)
-      Log.i("Url is \(url)")
+
       if (url.absoluteString.contains("orders/new")) {
         modalNavController.isModalInPresentation = true
       }
