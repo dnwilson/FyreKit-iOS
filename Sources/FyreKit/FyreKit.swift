@@ -94,6 +94,7 @@ public struct FyreKit {
   public static var appName : String { infoDictionary[Keys.Plist.appName] as? String ?? "FyreKit" }
   public static var loggedIn : Bool { preferences.bool(forKey: "LoggedIn") }
   public static var isDemoMode : Bool { preferences.bool(forKey: "DemoMode") }
+  public static var userId: Int { preferences.integer(forKey: "UserId") }
   public static var pushTokenSaved : Bool { preferences.bool(forKey: "PushTokenSaved") }
   public static var hasAuthToken : Bool { authToken?.isPresent ?? false }
   public static var authToken : String? { keychain["access-token"] }
@@ -143,5 +144,9 @@ public struct FyreKit {
   
   public static func setKeychainValue(_ value: Any?, key: String) {
     keychain[key] = value as? String
+  }
+  
+  public static func resetPrefs() {
+    UserDefaults.resetStandardUserDefaults()
   }
 }

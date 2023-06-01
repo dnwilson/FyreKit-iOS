@@ -9,7 +9,7 @@ import WebKit
 
 public protocol ScriptMessageDelegate: AnyObject {
   func addActionButton(_ button: TurboButton)
-  func addMenuButton(_ menuOptions: [TurboButton])
+  func addMenuButton(label: String, _ menuOptions: [TurboButton])
   func addSegmentedPicker(buttons: [TurboButton])
   func addMapLink(location: FyreKitLocation)
   func dismissModal(path: String)
@@ -18,7 +18,7 @@ public protocol ScriptMessageDelegate: AnyObject {
 public class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
   private weak var delegate: ScriptMessageDelegate?
   
-  init(delegate: ScriptMessageDelegate) {
+  public init(delegate: ScriptMessageDelegate) {
     self.delegate = delegate
   }
   
@@ -52,6 +52,7 @@ public class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
       delegate?.addSegmentedPicker(buttons: buttons)
     case "ActionSheetMenu":
       let options = body["options"] as! [[String: Any]]
+      let icon = body["icon"] as! String
       let menuOptions = TurboButton.buildButtons(options)
 //      var menuOptions: [[String: String]] = []
 //      for option in options {
@@ -66,7 +67,7 @@ public class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
 //        }
 //      }
 
-      delegate?.addMenuButton(menuOptions)
+      delegate?.addMenuButton(label: icon, menuOptions)
     case "MapLink":
       let latitude = body["latitude"] as! Double
       let longitude = body["longitude"] as! Double

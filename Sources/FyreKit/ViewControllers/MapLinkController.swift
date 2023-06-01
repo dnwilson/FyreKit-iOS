@@ -10,13 +10,13 @@ import CoreLocation
 import MapKit
 import UIKit
 
-class MapLinkController {
+public class MapLinkController {
   // If you are calling the coordinate from a Model, don't forgot to pass it in the function parenthesis.
-  static func present(in viewController: UIViewController, sourceView: UIView, location: FyreKitLocation) {
+  public static func present(in viewController: UIViewController, sourceView: UIView, location: FyreKitLocation) {
     let actionSheet = UIAlertController(title: "Open Location", message: "Choose an app to open direction", preferredStyle: .actionSheet)
     actionSheet.addAction(UIAlertAction(title: "Google Maps", style: .default, handler: { _ in
       // Pass the coordinate inside this URL
-      let url = URL(string: "comgooglemaps://?daddr=\(location.latitude),\(location.longitude)&directionsmode=driving&zoom=14&views=traffic")!
+      let url = URL(string: "comgooglemaps://?daddr=\(location.latitude), \(location.longitude)&directionsmode=driving&zoom=14&views=traffic")!
       UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }))
     actionSheet.addAction(UIAlertAction(title: "Apple Maps", style: .default, handler: { _ in

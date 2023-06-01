@@ -14,10 +14,6 @@ public protocol Registerable: Codable {
 }
 
 open class FyreKitRegistration : Registerable {
-//  var phoneNumber: String = ""
-//  var firstName: String = ""
-//  var lastName: String = ""
-//  var email: String = ""
   var agreeToLegalTerms: Bool = false
   public var password: String = ""
   

@@ -137,7 +137,7 @@ public class ApiService {
         (200 ..< 300).contains(response.statusCode),
         let headers = response.allHeaderFields as? [String: String],
         let data = data,
-        let token = try? JSONDecoder().decode(AccessToken.self, from: data)
+        let login = try? JSONDecoder().decode(LoginResponse.self, from: data)
       else {
         if error != nil {
           FyreKit.setKeychainValue(nil, key: "access-token")
@@ -157,9 +157,10 @@ public class ApiService {
           cookieStore.setCookie(cookie, completionHandler: nil)
         }
 
-        FyreKit.setKeychainValue(token.token, key: "access-token")
+        FyreKit.setKeychainValue(login.token, key: "access-token")
         Session().reload()
         FyreKit.setPref(true, key: "LoggedIn")
+        FyreKit.setPref(login.user.id!, key: "UserId")
         completion(.success(true))
       }
     }
@@ -181,7 +182,7 @@ public class ApiService {
         (200 ..< 300).contains(response.statusCode),
         let headers = response.allHeaderFields as? [String: String],
         let data = data,
-        let token = try? JSONDecoder().decode(AccessToken.self, from: data)
+        let login = try? JSONDecoder().decode(LoginResponse.self, from: data)
       else {
         if let error = error {
           completion(.failure(error))
@@ -203,9 +204,10 @@ public class ApiService {
         cookies.forEach { cookie in
           cookieStore.setCookie(cookie, completionHandler: nil)
         }
-        FyreKit.setKeychainValue(token.token, key: "access-token")
+        FyreKit.setKeychainValue(login.token, key: "access-token")
         Session().reload()
         FyreKit.setPref(true, key: "LoggedIn")
+        FyreKit.setPref(login.user.id!, key: "UserId")
         completion(.success(true))
       }
     }
@@ -213,7 +215,8 @@ public class ApiService {
     task.resume()
   }
 
-  private struct AccessToken: Decodable {
+  private struct LoginResponse: Decodable {
     let token: String
+    let user : TMSUser
   }
 }

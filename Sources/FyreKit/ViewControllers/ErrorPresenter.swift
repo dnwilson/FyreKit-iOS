@@ -1,13 +1,13 @@
 import UIKit
 
-protocol ErrorPresenter: UIViewController {
+public protocol ErrorPresenter: UIViewController {
   typealias Handler = () -> Void
   
   func presentError(_ error: Error, handler: @escaping Handler)
 }
 
 extension ErrorPresenter {
-  func presentError(_ error: Error, handler: @escaping Handler) {
+  public func presentError(_ error: Error, handler: @escaping Handler) {
     let errorViewController = ErrorViewController()
     errorViewController.configure(with: error) { [unowned self] in
       self.removeErrorViewController(errorViewController)
@@ -35,10 +35,10 @@ extension ErrorPresenter {
   }
 }
 
-final class ErrorViewController: UIViewController {
+public final class ErrorViewController: UIViewController {
   var handler: ErrorPresenter.Handler?
   
-  override func viewDidLoad() {
+  public override func viewDidLoad() {
     super.viewDidLoad()
     setup()
   }

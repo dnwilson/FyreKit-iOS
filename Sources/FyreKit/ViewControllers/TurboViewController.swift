@@ -9,8 +9,8 @@ import SafariServices
 import SwiftUI
 import Turbo
 
-final class TurboViewController: VisitableViewController, ErrorPresenter {
-  override func viewDidLoad() {
+public final class TurboViewController: VisitableViewController, ErrorPresenter {
+  public override func viewDidLoad() {
     super.viewDidLoad()
 
     if #available(iOS 14.0, *) {

@@ -8,16 +8,16 @@
 import UIKit
 
 public struct TurboButton {
-  var title: String?
-  var icon: String?
-  var path: String?
-  var type: String?
-  var script: String?
-  var alertMessage: String?
-  var alertTitle: String?
-  var isDanger: Bool { type == "danger" }
-  var isGet: Bool { path != nil }
-  var isScript: Bool { !isGet || ((script?.isPresent) != nil) }
+  public var title: String?
+  public var icon: String?
+  public var path: String?
+  public var type: String?
+  public var script: String?
+  public var alertMessage: String?
+  public var alertTitle: String?
+  public var isDanger: Bool { type == "danger" }
+  public var isGet: Bool { path != nil }
+  public var isScript: Bool { !isGet || ((script?.isPresent) != nil) }
 
   public init(_ params: [String: Any]) {
     self.title = params["title"] as? String
@@ -37,6 +37,6 @@ public struct TurboButton {
   }
 }
 
-class TurboUIBarButton: UIBarButtonItem {
+public class TurboUIBarButton: UIBarButtonItem {
   var actionString: String = ""
 }
