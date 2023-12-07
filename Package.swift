@@ -15,7 +15,7 @@ let package = Package(
   dependencies: [
     // Dependencies declare other packages that this package depends on.
     // .package(url: /* package url */, from: "1.0.0"),
-     .package(url: "https://github.com/hotwired/turbo-ios", from: "7.0.0-rc.7"),
+     .package(url: "https://github.com/hotwired/turbo-ios", from: "7.0.1"),
      .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
      .package(url: "https://github.com/izmcm/iPhoneNumberField", from: "0.6.1"),
      .package(url: "https://github.com/firebase/firebase-ios-sdk", .upToNextMajor(from: "8.10.0")),
